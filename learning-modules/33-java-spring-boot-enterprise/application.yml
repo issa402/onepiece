@@ -1,0 +1,281 @@
+# 🏴‍☠️ ONE PIECE TRADING PLATFORM - SPRING BOOT CONFIGURATION
+# Enterprise Configuration like Netflix/Amazon/Google
+# 
+# This is how big tech companies configure their Spring Boot applications:
+# - Environment-specific profiles (dev, test, prod)
+# - Database connection pooling for performance
+# - Caching configuration for speed
+# - Security settings for protection
+# - Monitoring and metrics for observability
+# - Logging configuration for debugging
+
+# =============================================================================
+# DEFAULT CONFIGURATION (Development Environment)
+# =============================================================================
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain
+
+spring:
+  application:
+    name: onepiece-trading-platform
+  
+  # Database Configuration (connects to your existing MySQL database)
+  datasource:
+    url: jdbc:mysql://localhost:3306/onepiece_market?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    
+    # Connection Pool Configuration (Netflix pattern)
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      idle-timeout: 300000
+      connection-timeout: 20000
+      max-lifetime: 1200000
+      leak-detection-threshold: 60000
+  
+  # JPA/Hibernate Configuration
+  jpa:
+    hibernate:
+      ddl-auto: validate  # Don't auto-create tables, use your existing schema
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+        use_sql_comments: true
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+        jdbc.batch_versioned_data: true
+  
+  # Redis Cache Configuration (Netflix caching pattern)
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+  
+  # Caching Configuration
+  cache:
+    type: redis
+    redis:
+      time-to-live: 600000  # 10 minutes
+      cache-null-values: false
+  
+  # Security Configuration
+  security:
+    user:
+      name: admin
+      password: ${ADMIN_PASSWORD:onepiece123}
+      roles: ADMIN
+  
+  # Jackson JSON Configuration
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    time-zone: UTC
+    date-format: yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
+
+# =============================================================================
+# EUREKA SERVICE DISCOVERY (Netflix pattern)
+# =============================================================================
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka/}
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 30
+    lease-expiration-duration-in-seconds: 90
+
+# =============================================================================
+# ACTUATOR MONITORING (Google SRE pattern)
+# =============================================================================
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,env,configprops
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: when-authorized
+      show-components: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+      percentiles:
+        http.server.requests: 0.5, 0.95, 0.99
+      slo:
+        http.server.requests: 10ms, 50ms, 100ms, 200ms, 500ms
+
+# =============================================================================
+# LOGGING CONFIGURATION (Enterprise logging)
+# =============================================================================
+logging:
+  level:
+    com.onepiece.trading: INFO
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/onepiece-trading.log
+    max-size: 10MB
+    max-history: 30
+
+# =============================================================================
+# CUSTOM APPLICATION PROPERTIES
+# =============================================================================
+onepiece:
+  trading:
+    # Business Configuration
+    max-trades-per-user: 100
+    max-trade-amount: 1000000
+    commission-rate: 0.01
+    
+    # Feature Flags
+    features:
+      real-time-prices: true
+      advanced-analytics: true
+      social-trading: false
+    
+    # External API Configuration
+    external-apis:
+      character-data-url: ${CHARACTER_API_URL:https://api.onepiece.com/characters}
+      price-feed-url: ${PRICE_FEED_URL:https://api.onepiece.com/prices}
+    
+    # File Upload Configuration
+    file-upload:
+      max-file-size: 5MB
+      allowed-types: jpg,jpeg,png,gif
+      upload-dir: ${UPLOAD_DIR:./uploads}
+
+---
+# =============================================================================
+# DEVELOPMENT PROFILE
+# =============================================================================
+spring:
+  config:
+    activate:
+      on-profile: dev
+  
+  # Development Database (H2 for quick testing)
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+  
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+
+logging:
+  level:
+    com.onepiece.trading: DEBUG
+    org.springframework: DEBUG
+
+---
+# =============================================================================
+# TEST PROFILE
+# =============================================================================
+spring:
+  config:
+    activate:
+      on-profile: test
+  
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+  
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+
+logging:
+  level:
+    com.onepiece.trading: WARN
+    org.springframework: WARN
+
+---
+# =============================================================================
+# PRODUCTION PROFILE
+# =============================================================================
+spring:
+  config:
+    activate:
+      on-profile: prod
+  
+  # Production Database Configuration
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:onepiece_market}?useSSL=true&serverTimezone=UTC
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    
+    # Production Connection Pool
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 10
+      connection-timeout: 30000
+      max-lifetime: 1800000
+  
+  # Production JPA Settings
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
+# Production Security
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus
+  endpoint:
+    health:
+      show-details: never
+
+logging:
+  level:
+    com.onepiece.trading: INFO
+    org.springframework: WARN
+    org.hibernate: WARN
+  file:
+    name: /var/log/onepiece-trading/application.log
