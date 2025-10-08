@@ -1,0 +1,33 @@
+{
+  "name": "onepiece-javascript-fundamentals",
+  "version": "1.0.0",
+  "description": "One Piece Trading Platform - JavaScript Fundamentals Learning Module",
+  "main": "01-js-mastery-coding-lab.js",
+  "scripts": {
+    "setup": "node setup-database.js",
+    "start": "node 01-js-mastery-coding-lab.js",
+    "test": "node test-database-connection.js"
+  },
+  "keywords": [
+    "javascript",
+    "postgresql",
+    "async",
+    "callbacks",
+    "promises",
+    "onepiece",
+    "trading"
+  ],
+  "author": "One Piece Trading Platform",
+  "license": "MIT",
+  "dependencies": {
+    "mysql2": "^3.6.5",
+    "dotenv": "^16.3.1",
+    "redis": "^4.6.10"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

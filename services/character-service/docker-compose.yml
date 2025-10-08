@@ -1,0 +1,318 @@
+# 🏴‍☠️ SRE MASTERY: DOCKER COMPOSE ORCHESTRATION BLUEPRINT
+# ═══════════════════════════════════════════════════════════
+#
+# 🎯 LEARNING OBJECTIVES - BECOME A MICROSERVICES ORCHESTRATION EXPERT:
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# ✅ Master multi-service application orchestration patterns
+# ✅ Implement service discovery and inter-service communication
+# ✅ Learn database clustering and data persistence strategies
+# ✅ Practice environment-based configuration management
+# ✅ Understand load balancing and horizontal scaling
+# ✅ Implement comprehensive health checking and monitoring
+#
+# 📖 DEVOPS THEORY: MICROSERVICES ORCHESTRATION
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Docker Compose solves complex multi-service challenges:
+#
+# 1. 🌐 SERVICE DISCOVERY - Services find each other by name
+# 2. 🔗 NETWORKING - Isolated networks for security
+# 3. 💾 DATA PERSISTENCE - Volumes survive container restarts
+# 4. 🔄 DEPENDENCY MANAGEMENT - Services start in correct order
+# 5. 📊 MONITORING - Health checks and log aggregation
+# 6. 🚀 SCALING - Horizontal scaling with load balancing
+#
+# 🔧 REAL-WORLD SRE/DEVOPS CONNECTION:
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# This orchestration pattern is used by:
+# • Netflix: Microservices architecture with service mesh
+# • Uber: Multi-region service deployment and scaling
+# • Airbnb: Development environment standardization
+# • Spotify: Feature team service isolation
+# • Amazon: ECS task definitions mirror Compose patterns
+
+# 🧪 HANDS-ON LAB 1: COMPOSE FILE VERSION STRATEGY
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 📚 THEORY: Docker Compose Version Selection
+#
+# Version History & Features:
+# • 3.8: Latest stable, supports all modern features
+# • 3.7: GPU support, external secrets
+# • 3.6: Configs, deploy placement constraints
+# • 3.5: Isolation mode, external networks
+#
+# 🔧 PRODUCTION CHOICE: 3.8
+# ✅ Full feature support for modern deployments
+# ✅ Compatible with Docker Swarm mode
+# ✅ Supports external configs and secrets
+# ✅ Best performance and stability
+
+version: '3.8'
+
+# 🧪 HANDS-ON LAB 2: MICROSERVICES ARCHITECTURE DESIGN
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 📚 THEORY: Service Definition Strategy
+#
+# Each service represents a microservice with:
+# ✅ Single responsibility (character management)
+# ✅ Independent deployment and scaling
+# ✅ Isolated failure domains
+# ✅ Clear API boundaries
+#
+# 🔧 SRE PATTERN: Service Mesh Architecture
+# This mirrors production service mesh patterns used by:
+# • Istio (Google/IBM)
+# • Linkerd (Buoyant)
+# • Consul Connect (HashiCorp)
+
+services:
+
+  # 🧪 HANDS-ON LAB 3: APPLICATION SERVICE CONFIGURATION
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  # 📚 THEORY: Container Build vs Image Strategy
+  #
+  # build: . (Development)
+  # ✅ Builds from local Dockerfile
+  # ✅ Fast iteration during development
+  # ✅ Includes latest code changes
+  #
+  # image: registry/app:tag (Production)
+  # ✅ Uses pre-built, tested images
+  # ✅ Consistent deployments
+  # ✅ Faster startup times
+  #
+  # 🔧 DEVOPS BEST PRACTICE:
+  # Use build for dev, image for production
+
+  
+  
+  character-service:
+    build: .
+    container_name: onepiece-character-api
+
+    # 🧪 HANDS-ON LAB 4: NETWORK PORT MANAGEMENT
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # 📚 THEORY: Port Mapping Strategy
+    #
+    # Format: "host_port:container_port"
+    # • 5000:5000 - Direct mapping (simple)
+    # • 80:5000 - Standard HTTP port mapping
+    # • 127.0.0.1:5000:5000 - Localhost only (security)
+    #
+    # 🔒 SECURITY CONSIDERATION:
+    # Only expose ports that need external access
+
+
+    ports:
+      - "5000:5000"
+
+    # 🧪 HANDS-ON LAB 5: ENVIRONMENT-BASED CONFIGURATION
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # 📚 THEORY: 12-Factor App Configuration
+    #
+    # Environment variables enable:
+    # ✅ Environment-specific configuration
+    # ✅ Secret management (don't hardcode passwords)
+    # ✅ Easy deployment across environments
+    # ✅ Runtime configuration changes
+    #
+    # 🔧 CLOUD NATIVE PATTERN:
+    # All major cloud platforms use environment variables
+
+    environment:
+      - FLASK_ENV=development
+      - PYTHONUNBUFFERED=1
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=onepiece123
+      - DB_NAME=onepiece_market
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+
+    # 🧪 HANDS-ON LAB 6: SERVICE DEPENDENCY MANAGEMENT
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # 📚 THEORY: Startup Order and Health Checks
+    #
+    # depends_on ensures:
+    # ✅ Services start in correct order
+    # ✅ Dependencies are available before app starts
+    # ❌ Does NOT wait for service to be "ready"
+    #
+    # 🔧 SRE BEST PRACTICE:
+    # Combine depends_on with health checks and retry logic
+
+    depends_on:
+      - mysql
+      - redis
+
+    # 🧪 HANDS-ON LAB 7: CONTAINER RESTART POLICIES
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # 📚 THEORY: Restart Policy Options
+    #
+    # • no: Never restart (default)
+    # • always: Always restart on failure
+    # • on-failure: Restart only on non-zero exit
+    # • unless-stopped: Restart unless manually stopped
+    #
+    # 🔧 SRE CHOICE: unless-stopped
+    # ✅ Survives host reboots
+    # ✅ Respects manual stops
+    # ✅ Handles application crashes
+
+    restart: unless-stopped
+
+    # 🧪 HANDS-ON LAB 8: HEALTH CHECK INTEGRATION
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # 📚 THEORY: Container Health Monitoring
+    #
+    # Health checks enable:
+    # ✅ Automatic unhealthy container restart
+    # ✅ Load balancer integration
+    # ✅ Monitoring system integration
+    # ✅ Deployment readiness validation
+    #
+    # 🔧 KUBERNETES INTEGRATION:
+    # These health checks translate to liveness/readiness probes
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    #   - redis
+    # Volumes for development (code changes reflect immediately)
+    # volumes:
+    #   - .:/app
+    # Restart policy
+    # restart: unless-stopped
+
+  # TODO 4: MYSQL DATABASE SERVICE
+  # mysql:
+    # Use official MySQL image
+    # image: mysql:8.0
+    # Container name
+    # container_name: onepiece-mysql
+    # Environment variables for MySQL setup
+    # environment:
+    #   - MYSQL_ROOT_PASSWORD=onepiece123
+    #   - MYSQL_DATABASE=onepiece_market
+    #   - MYSQL_USER=onepiece_user
+    #   - MYSQL_PASSWORD=onepiece123
+    # Port mapping
+    # ports:
+    #   - "3306:3306"
+    # Volume for data persistence
+    # volumes:
+    #   - mysql_data:/var/lib/mysql
+    #   - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+    #   - ./database/sample_data.sql:/docker-entrypoint-initdb.d/02-data.sql
+    # Restart policy
+    # restart: unless-stopped
+    # Health check
+    # healthcheck:
+    #   test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+    #   timeout: 20s
+    #   retries: 10
+
+  # TODO 5: REDIS CACHE SERVICE
+  # redis:
+    # Use official Redis image
+    # image: redis:7-alpine
+    # Container name
+    # container_name: onepiece-redis
+    # Port mapping
+    # ports:
+    #   - "6379:6379"
+    # Command to run Redis with password
+    # command: redis-server --requirepass onepiece123
+    # Restart policy
+    # restart: unless-stopped
+    # Health check
+    # healthcheck:
+    #   test: ["CMD", "redis-cli", "ping"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 5
+
+  # TODO 6: ADMINER (Database Management Tool)
+  # adminer:
+    # Database management web interface
+    # image: adminer
+    # container_name: onepiece-adminer
+    # Port mapping
+    # ports:
+    #   - "8080:8080"
+    # Depends on MySQL
+    # depends_on:
+    #   - mysql
+    # Restart policy
+    # restart: unless-stopped
+
+# TODO 7: DEFINE VOLUMES
+# volumes:
+  # Persistent storage for MySQL data
+  # mysql_data:
+
+# TODO 8: DEFINE NETWORKS (Optional)
+# networks:
+  # onepiece_network:
+    # driver: bridge
+
+"""
+🎯 WHAT EACH SERVICE DOES:
+
+character-service: Your Flask API application
+mysql: Database server for storing character data
+redis: Cache server for session management and performance
+adminer: Web-based database management tool
+
+🚀 DOCKER COMPOSE CONCEPTS:
+
+1. Multi-container applications
+2. Service dependencies (depends_on)
+3. Environment variable management
+4. Volume mounting for data persistence
+5. Network communication between containers
+6. Health checks for service monitoring
+7. Restart policies for reliability
+
+📚 DOCKER COMPOSE COMMANDS:
+
+docker-compose up -d          # Start all services in background
+docker-compose down           # Stop and remove all services
+docker-compose logs           # View logs from all services
+docker-compose ps             # List running services
+docker-compose exec mysql bash  # Enter MySQL container
+docker-compose restart character-service  # Restart specific service
+
+🔧 DEVELOPMENT WORKFLOW:
+
+1. docker-compose up -d mysql redis    # Start dependencies first
+2. Wait for MySQL to be ready
+3. docker-compose up character-service # Start your API
+4. Access Adminer at http://localhost:8080 for database management
+5. Your API runs at http://localhost:5001
+
+🌐 SERVICE URLS:
+
+Flask API: http://localhost:5001
+MySQL: localhost:3306
+Redis: localhost:6379
+Adminer: http://localhost:8080
+
+📊 ADMINER LOGIN:
+Server: mysql
+Username: root
+Password: onepiece123
+Database: onepiece_market
+
+PRODUCTION NOTES:
+- Change default passwords
+- Use secrets management
+- Configure proper networks
+- Set up monitoring and logging
+- Use production-ready images
+
+NEXT FILE AFTER THIS: Create application runner script! 🚀
+"""

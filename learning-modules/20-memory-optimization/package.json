@@ -1,0 +1,51 @@
+{
+  "name": "onepiece-memory-optimization",
+  "version": "1.0.0",
+  "description": "Memory Optimization & Performance module for One Piece Trading Platform",
+  "main": "01-memory-performance-coding-lab.js",
+  "scripts": {
+    "start": "node 01-memory-performance-coding-lab.js",
+    "test": "jest",
+    "memory-profile": "node --expose-gc --inspect 01-memory-performance-coding-lab.js",
+    "load-test": "artillery quick --count 100 --num 10 http://localhost:5000/api/characters",
+    "memory-monitor": "node --expose-gc utils/memoryMonitor.js"
+  },
+  "keywords": [
+    "memory-optimization",
+    "performance",
+    "nodejs",
+    "react",
+    "virtual-scrolling",
+    "memory-monitoring",
+    "stream-processing",
+    "garbage-collection"
+  ],
+  "author": "One Piece Trading Platform",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mysql2": "^3.6.0",
+    "redis": "^4.6.7",
+    "cors": "^2.8.5",
+    "helmet": "^7.0.0",
+    "compression": "^1.7.4"
+  },
+  "devDependencies": {
+    "jest": "^29.6.1",
+    "artillery": "^2.0.0",
+    "nodemon": "^3.0.1",
+    "@types/node": "^20.4.5"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/onepiece-trading/memory-optimization.git"
+  },
+  "bugs": {
+    "url": "https://github.com/onepiece-trading/memory-optimization/issues"
+  },
+  "homepage": "https://github.com/onepiece-trading/memory-optimization#readme"
+}

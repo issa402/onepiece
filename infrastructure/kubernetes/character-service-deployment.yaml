@@ -1,0 +1,348 @@
+# 🏴‍☠️ KUBERNETES DEPLOYMENT CONFIGURATION BLUEPRINT
+# Your mission: Create Kubernetes manifests for container orchestration
+
+# WHAT YOU'RE BUILDING:
+# - Kubernetes Deployment manifests
+# - Service discovery and load balancing
+# - ConfigMaps and Secrets management
+# - Persistent Volume Claims for data storage
+# - Ingress controllers for external access
+# - Auto-scaling and resource management
+# - Health checks and monitoring
+
+# LEARNING OBJECTIVES:
+# - Kubernetes architecture and concepts
+# - YAML manifest creation and management
+# - Container orchestration patterns
+# - Service mesh and networking
+# - Storage and persistence
+# - Security and RBAC
+# - Monitoring and observability
+
+# TODO 1: NAMESPACE DEFINITION
+# Create a dedicated namespace for the One Piece application
+# apiVersion: v1
+# kind: Namespace
+# metadata:
+#   name: onepiece-market
+#   labels:
+#     app: onepiece-market
+#     environment: production
+
+---
+# TODO 2: CONFIGMAP FOR CHARACTER SERVICE
+# Store configuration data separately from container images
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: character-service-config
+#   namespace: onepiece-market
+# data:
+#   FLASK_ENV: "production"
+#   API_HOST: "0.0.0.0"
+#   API_PORT: "5001"
+#   DB_HOST: "mysql-service"
+#   DB_PORT: "3306"
+#   DB_NAME: "onepiece_market"
+#   REDIS_HOST: "redis-service"
+#   REDIS_PORT: "6379"
+#   LOG_LEVEL: "INFO"
+#   CORS_ORIGINS: "https://onepiece-market.com,https://api.onepiece-market.com"
+
+---
+# TODO 3: SECRET FOR SENSITIVE DATA
+# Store sensitive information like passwords and API keys
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: character-service-secrets
+#   namespace: onepiece-market
+# type: Opaque
+# data:
+#   # Base64 encoded values (use: echo -n 'password' | base64)
+#   DB_PASSWORD: cGFzc3dvcmQxMjM=  # password123
+#   SECRET_KEY: bHVmZnktd2lsbC1iZS1waXJhdGUta2luZw==  # luffy-will-be-pirate-king
+#   JWT_SECRET: b25lcGllY2Utand0LXNlY3JldA==  # onepiece-jwt-secret
+
+---
+# TODO 4: DEPLOYMENT MANIFEST
+# Define the Character Service deployment
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: character-service
+#   namespace: onepiece-market
+#   labels:
+#     app: character-service
+#     component: backend
+#     version: v1.0.0
+# spec:
+#   replicas: 3  # Run 3 instances for high availability
+#   selector:
+#     matchLabels:
+#       app: character-service
+#   template:
+#     metadata:
+#       labels:
+#         app: character-service
+#         component: backend
+#         version: v1.0.0
+#     spec:
+#       containers:
+#       - name: character-service
+#         image: onepiece/character-service:latest
+#         imagePullPolicy: Always
+#         ports:
+#         - containerPort: 5001
+#           name: http
+#         env:
+#         # Environment variables from ConfigMap
+#         - name: FLASK_ENV
+#           valueFrom:
+#             configMapKeyRef:
+#               name: character-service-config
+#               key: FLASK_ENV
+#         - name: API_HOST
+#           valueFrom:
+#             configMapKeyRef:
+#               name: character-service-config
+#               key: API_HOST
+#         - name: API_PORT
+#           valueFrom:
+#             configMapKeyRef:
+#               name: character-service-config
+#               key: API_PORT
+#         - name: DB_HOST
+#           valueFrom:
+#             configMapKeyRef:
+#               name: character-service-config
+#               key: DB_HOST
+#         - name: DB_PORT
+#           valueFrom:
+#             configMapKeyRef:
+#               name: character-service-config
+#               key: DB_PORT
+#         - name: DB_NAME
+#           valueFrom:
+#             configMapKeyRef:
+#               name: character-service-config
+#               key: DB_NAME
+#         # Sensitive data from Secret
+#         - name: DB_PASSWORD
+#           valueFrom:
+#             secretKeyRef:
+#               name: character-service-secrets
+#               key: DB_PASSWORD
+#         - name: SECRET_KEY
+#           valueFrom:
+#             secretKeyRef:
+#               name: character-service-secrets
+#               key: SECRET_KEY
+#         # Resource limits and requests
+#         resources:
+#           requests:
+#             memory: "256Mi"
+#             cpu: "250m"
+#           limits:
+#             memory: "512Mi"
+#             cpu: "500m"
+#         # Health checks
+#         livenessProbe:
+#           httpGet:
+#             path: /health
+#             port: 5001
+#           initialDelaySeconds: 30
+#           periodSeconds: 10
+#           timeoutSeconds: 5
+#           failureThreshold: 3
+#         readinessProbe:
+#           httpGet:
+#             path: /health
+#             port: 5001
+#           initialDelaySeconds: 5
+#           periodSeconds: 5
+#           timeoutSeconds: 3
+#           failureThreshold: 3
+#         # Volume mounts for logs
+#         volumeMounts:
+#         - name: logs
+#           mountPath: /app/logs
+#       volumes:
+#       - name: logs
+#         emptyDir: {}
+#       # Restart policy
+#       restartPolicy: Always
+
+---
+# TODO 5: SERVICE DEFINITION
+# Expose the Character Service within the cluster
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: character-service
+#   namespace: onepiece-market
+#   labels:
+#     app: character-service
+#     component: backend
+# spec:
+#   type: ClusterIP  # Internal service
+#   ports:
+#   - port: 80
+#     targetPort: 5001
+#     protocol: TCP
+#     name: http
+#   selector:
+#     app: character-service
+
+---
+# TODO 6: HORIZONTAL POD AUTOSCALER
+# Automatically scale based on CPU/memory usage
+# apiVersion: autoscaling/v2
+# kind: HorizontalPodAutoscaler
+# metadata:
+#   name: character-service-hpa
+#   namespace: onepiece-market
+# spec:
+#   scaleTargetRef:
+#     apiVersion: apps/v1
+#     kind: Deployment
+#     name: character-service
+#   minReplicas: 2
+#   maxReplicas: 10
+#   metrics:
+#   - type: Resource
+#     resource:
+#       name: cpu
+#       target:
+#         type: Utilization
+#         averageUtilization: 70
+#   - type: Resource
+#     resource:
+#       name: memory
+#       target:
+#         type: Utilization
+#         averageUtilization: 80
+
+---
+# TODO 7: NETWORK POLICY
+# Control network traffic between pods
+# apiVersion: networking.k8s.io/v1
+# kind: NetworkPolicy
+# metadata:
+#   name: character-service-netpol
+#   namespace: onepiece-market
+# spec:
+#   podSelector:
+#     matchLabels:
+#       app: character-service
+#   policyTypes:
+#   - Ingress
+#   - Egress
+#   ingress:
+#   - from:
+#     - podSelector:
+#         matchLabels:
+#           app: api-gateway
+#     - podSelector:
+#         matchLabels:
+#           app: trading-service
+#     ports:
+#     - protocol: TCP
+#       port: 5001
+#   egress:
+#   - to:
+#     - podSelector:
+#         matchLabels:
+#           app: mysql
+#     ports:
+#     - protocol: TCP
+#       port: 3306
+#   - to:
+#     - podSelector:
+#         matchLabels:
+#           app: redis
+#     ports:
+#     - protocol: TCP
+#       port: 6379
+
+---
+# TODO 8: SERVICE MONITOR (for Prometheus)
+# Monitor service metrics
+# apiVersion: monitoring.coreos.com/v1
+# kind: ServiceMonitor
+# metadata:
+#   name: character-service-monitor
+#   namespace: onepiece-market
+#   labels:
+#     app: character-service
+# spec:
+#   selector:
+#     matchLabels:
+#       app: character-service
+#   endpoints:
+#   - port: http
+#     path: /metrics
+#     interval: 30s
+
+---
+# TODO 9: POD DISRUPTION BUDGET
+# Ensure availability during updates and node maintenance
+# apiVersion: policy/v1
+# kind: PodDisruptionBudget
+# metadata:
+#   name: character-service-pdb
+#   namespace: onepiece-market
+# spec:
+#   minAvailable: 2
+#   selector:
+#     matchLabels:
+#       app: character-service
+
+# WHAT EACH RESOURCE DOES:
+#
+# Namespace: Isolates resources and provides scope
+# ConfigMap: Stores non-sensitive configuration data
+# Secret: Stores sensitive data like passwords and keys
+# Deployment: Manages pod replicas and rolling updates
+# Service: Provides stable network endpoint for pods
+# HorizontalPodAutoscaler: Automatically scales pods based on metrics
+# NetworkPolicy: Controls network traffic between pods
+# ServiceMonitor: Configures Prometheus monitoring
+# PodDisruptionBudget: Ensures minimum availability during disruptions
+#
+# 🚀 KUBERNETES CONCEPTS YOU'LL LEARN:
+#
+# 1. Pods - Smallest deployable units
+# 2. Deployments - Manage pod replicas and updates
+# 3. Services - Network abstraction and load balancing
+# 4. ConfigMaps/Secrets - Configuration management
+# 5. Namespaces - Resource isolation and organization
+# 6. Labels/Selectors - Resource identification and grouping
+# 7. Health Checks - Liveness and readiness probes
+#
+# 📚 KUBERNETES NETWORKING:
+#
+# 1. Cluster IP - Internal service communication
+# 2. NodePort - External access via node ports
+# 3. LoadBalancer - Cloud provider load balancers
+# 4. Ingress - HTTP/HTTPS routing and SSL termination
+# 5. Network Policies - Traffic control and security
+# 6. Service Mesh - Advanced traffic management
+#
+# 🔧 KUBERNETES STORAGE:
+#
+# 1. Volumes - Temporary storage for pods
+# 2. Persistent Volumes - Durable storage resources
+# 3. Persistent Volume Claims - Storage requests
+# 4. Storage Classes - Dynamic provisioning
+# 5. StatefulSets - Stateful applications
+# 6. Volume Snapshots - Backup and restore
+#
+# DEPLOYMENT COMMANDS:
+# kubectl apply -f character-service-deployment.yaml
+# kubectl get pods -n onepiece-market
+# kubectl logs -f deployment/character-service -n onepiece-market
+# kubectl describe service character-service -n onepiece-market
+# kubectl get hpa -n onepiece-market
+#
+# NEXT FILE AFTER THIS: Create Ingress and Load Balancer configurations! 🚀
