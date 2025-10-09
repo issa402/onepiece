@@ -1,51 +1,147 @@
 /*
-🏴‍☠️ MODULE 33: JAVA SPRING BOOT ENTERPRISE - BIG TECH BACKEND MASTERY
+🏴‍☠️ MODULE 33: FAANG-LEVEL JAVA ENTERPRISE MASTERY
 ═══════════════════════════════════════════════════════════════════════════════
 
 🎯 WHAT YOU'RE BUILDING:
 ENTERPRISE-LEVEL Java Spring Boot backend like Netflix, Amazon, Google, LinkedIn!
 This is the EXACT Java stack that powers the world's biggest tech companies!
 
-📚 LEARNING OBJECTIVES:
-- Spring Boot fundamentals (Netflix/Amazon standard)
-- RESTful API development (Enterprise patterns)
-- JPA/Hibernate ORM (Database layer like Google)
-- Spring Security (Authentication like LinkedIn)
-- Microservices architecture (Netflix pattern)
-- Enterprise design patterns (Big tech standards)
-- Production deployment (Docker + Kubernetes)
-- Testing strategies (Unit + Integration)
+📚 COMPREHENSIVE LEARNING OBJECTIVES:
+
+🔥 JAVA FUNDAMENTALS (FAANG LEVEL):
+- Advanced OOP, memory management, JVM internals
+- Collections framework, multithreading, performance optimization
+- Generics, lambdas, streams, modern Java features (17+)
+- Design patterns, reflection, annotations
+
+⚡ MAVEN BUILD MASTERY:
+- Multi-module projects, dependency management, BOM patterns
+- Profiles, plugins, release management, CI/CD integration
+- Performance optimization, security scanning, quality gates
+- Enterprise patterns, corporate standards
+
+🗄️ SPRING CORE DEEP DIVE:
+- IoC container, dependency injection, bean lifecycle
+- AOP (Aspect-Oriented Programming), pointcuts, advice
+- Configuration approaches (XML, annotations, Java config)
+- Testing strategies, profiles, conditional configuration
+
+🚀 SPRING BOOT ENTERPRISE:
+- Auto-configuration, starters, actuator, profiles
+- RESTful APIs, validation, exception handling
+- JPA/Hibernate, transactions, connection pooling
+- Security, JWT, OAuth2, method-level security
 
 🔗 INTEGRATES WITH YOUR ONE PIECE PROJECT:
 - REPLACES: Your Node.js services with Java equivalents
 - SCALES: To enterprise level like Netflix/Amazon
-- CONNECTS: To your existing database and frontend
+- CONNECTS: To your existing PostgreSQL database and frontend
 - DEMONSTRATES: Why big tech chooses Java for core services
 
-💰 CAREER IMPACT: +$50K-$100K (Java Spring Boot is highest paid backend skill!)
+💰 CAREER IMPACT: +$50K-$150K (Complete Java enterprise stack!)
 
-🎯 BIG TECH COMPANIES USING JAVA SPRING BOOT:
+🎯 BIG TECH COMPANIES USING THIS COMPLETE STACK:
 - Netflix: Core streaming services, billing, user management
-- Amazon: E-commerce backend, AWS services
-- Google: Enterprise services, internal tools
-- LinkedIn: Social platform backend, messaging
-- Uber: Some core services, enterprise features
-- Twitter: Backend services, API layer
+- Amazon: E-commerce backend, AWS services, internal tools
+- Google: Enterprise services, internal platforms
+- LinkedIn: Social platform backend, messaging, data processing
+- Uber: Core services, enterprise features, microservices
+- Twitter: Backend services, API layer, real-time processing
+- PayPal: Payment processing, fraud detection, enterprise systems
+- Airbnb: Booking services, pricing engine, data platforms
 */
 
-// TODO 1: SPRING BOOT APPLICATION SETUP (NETFLIX PATTERN)
+// TODO 1: MAVEN PROJECT STRUCTURE (ENTERPRISE PATTERN)
 // ═══════════════════════════════════════════════════════════
 /*
-🎯 YOUR TASK: Create Spring Boot application like Netflix
+🎯 YOUR TASK: Set up enterprise Maven multi-module project
 
-NETFLIX'S JAVA ARCHITECTURE:
-- Spring Boot for microservices
-- Spring Cloud for service discovery
-- Spring Data JPA for database access
-- Spring Security for authentication
-- Docker containers for deployment
+ENTERPRISE MAVEN STRUCTURE:
+onepiece-trading-platform/
+├── pom.xml (parent POM)
+├── onepiece-common/
+├── onepiece-character-service/
+├── onepiece-trading-service/
+├── onepiece-user-service/
+└── onepiece-api-gateway/
 
-YOUR ONE PIECE TRADING SERVICE IN JAVA:
+PARENT POM.XML EXAMPLE:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.onepiece.trading</groupId>
+    <artifactId>onepiece-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <spring-boot.version>3.2.0</spring-boot.version>
+        <spring-cloud.version>2023.0.0</spring-cloud.version>
+    </properties>
+
+    <modules>
+        <module>onepiece-common</module>
+        <module>onepiece-character-service</module>
+        <module>onepiece-trading-service</module>
+        <module>onepiece-user-service</module>
+        <module>onepiece-api-gateway</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
+
+CHILD MODULE POM.XML EXAMPLE (character-service):
+<project>
+    <parent>
+        <groupId>com.onepiece.trading</groupId>
+        <artifactId>onepiece-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>onepiece-character-service</artifactId>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.onepiece.trading</groupId>
+            <artifactId>onepiece-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+</project>
+*/
+
+// TODO 2: SPRING CORE CONFIGURATION (FAANG PATTERN)
+// ═══════════════════════════════════════════════════════════
+/*
+🎯 YOUR TASK: Create enterprise Spring Core configuration
+
+SPRING CORE FUNDAMENTALS:
+- IoC Container and Dependency Injection
+- Bean lifecycle and scopes
+- AOP for cross-cutting concerns
+- Configuration approaches (Java config preferred)
 */
 
 package com.onepiece.trading;
@@ -75,6 +171,491 @@ public class OnePieceTradingApplication {
         SpringApplication.run(OnePieceTradingApplication.class, args);
         System.out.println("🏴‍☠️ One Piece Trading Platform Started!");
         System.out.println("🚀 Enterprise Java Backend Running on Spring Boot");
+        System.out.println("📚 Comprehensive Java + Maven + Spring Core Implementation");
+    }
+}
+
+// TODO 1.5: SPRING CORE CONFIGURATION (ENTERPRISE PATTERN)
+// ═══════════════════════════════════════════════════════════
+/*
+🎯 YOUR TASK: Create enterprise Spring Core configuration
+
+SPRING CORE FUNDAMENTALS IMPLEMENTATION:
+- IoC Container and Dependency Injection
+- Bean lifecycle and scopes
+- AOP for cross-cutting concerns
+- Configuration approaches (Java config preferred)
+*/
+
+package com.onepiece.trading.config;
+
+import org.springframework.context.annotation.*;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.aop.framework.ProxyFactoryBean;
+import org.springframework.aop.support.NameMatchMethodPointcut;
+
+import java.util.concurrent.Executor;
+
+/**
+ * 🏴‍☠️ Enterprise Spring Core Configuration
+ *
+ * This demonstrates FAANG-level Spring Core patterns:
+ * - Advanced bean configuration and lifecycle management
+ * - Conditional bean creation based on properties/profiles
+ * - Multiple bean instances with qualifiers
+ * - Custom scopes and proxy configurations
+ */
+@Configuration
+@EnableCaching
+@EnableAsync
+@EnableTransactionManagement
+@Profile("!test")
+public class CoreConfiguration {
+
+    // Bean with custom lifecycle callbacks
+    @Bean(initMethod = "initialize", destroyMethod = "cleanup")
+    @Scope("singleton")
+    public PriceCalculationEngine priceCalculationEngine() {
+        PriceCalculationEngine engine = new PriceCalculationEngine();
+        engine.setAlgorithm("ADVANCED_VOLATILITY");
+        return engine;
+    }
+
+    // Conditional bean creation (Netflix pattern)
+    @Bean
+    @ConditionalOnProperty(name = "onepiece.caching.enabled", havingValue = "true", matchIfMissing = true)
+    public CacheManager redisCacheManager() {
+        return new RedisCacheManager();
+    }
+
+    // Primary bean when multiple candidates exist
+    @Bean
+    @Primary
+    public NotificationService primaryNotificationService() {
+        return new EmailNotificationService();
+    }
+
+    // Qualified bean for specific use cases
+    @Bean
+    @Qualifier("sms")
+    public NotificationService smsNotificationService() {
+        return new SmsNotificationService();
+    }
+
+    // Qualified bean for push notifications
+    @Bean
+    @Qualifier("push")
+    public NotificationService pushNotificationService() {
+        return new PushNotificationService();
+    }
+
+    // Custom thread pool for async operations (Uber pattern)
+    @Bean("tradingExecutor")
+    public Executor tradingTaskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(5);
+        executor.setMaxPoolSize(20);
+        executor.setQueueCapacity(100);
+        executor.setThreadNamePrefix("Trading-");
+        executor.setWaitForTasksToCompleteOnShutdown(true);
+        executor.setAwaitTerminationSeconds(30);
+        return executor;
+    }
+
+    // Profile-specific configuration
+    @Bean
+    @Profile("development")
+    public DatabaseInitializer devDatabaseInitializer() {
+        return new DevDatabaseInitializer();
+    }
+
+    @Bean
+    @Profile("production")
+    public DatabaseInitializer prodDatabaseInitializer() {
+        return new ProdDatabaseInitializer();
+    }
+}
+
+// ASPECT-ORIENTED PROGRAMMING (AOP) IMPLEMENTATION
+@Aspect
+@Component
+public class TradingAspect {
+
+    private static final Logger logger = LoggerFactory.getLogger(TradingAspect.class);
+
+    // Before advice - executed before method (LinkedIn pattern)
+    @Before("execution(* com.onepiece.trading.service.TradingService.executeTrade(..))")
+    public void beforeTrade(JoinPoint joinPoint) {
+        Object[] args = joinPoint.getArgs();
+        logger.info("🏴‍☠️ Starting trade execution: {} with args: {}",
+                   joinPoint.getSignature().getName(), args);
+    }
+
+    // Around advice - complete method interception (Netflix monitoring pattern)
+    @Around("@annotation(com.onepiece.trading.annotation.Monitored)")
+    public Object monitorPerformance(ProceedingJoinPoint joinPoint) throws Throwable {
+        long startTime = System.currentTimeMillis();
+        String methodName = joinPoint.getSignature().getName();
+
+        try {
+            logger.debug("⚡ Starting method: {}", methodName);
+            Object result = joinPoint.proceed();
+            long endTime = System.currentTimeMillis();
+            long executionTime = endTime - startTime;
+
+            logger.info("✅ Method {} executed successfully in {}ms", methodName, executionTime);
+
+            // Record metrics (Prometheus/Micrometer integration)
+            recordMethodMetrics(methodName, executionTime, "SUCCESS");
+
+            return result;
+        } catch (Exception e) {
+            long endTime = System.currentTimeMillis();
+            long executionTime = endTime - startTime;
+
+            logger.error("❌ Method {} failed after {}ms: {}", methodName, executionTime, e.getMessage());
+            recordMethodMetrics(methodName, executionTime, "ERROR");
+            throw e;
+        }
+    }
+
+    // After returning advice - executed after successful method completion
+    @AfterReturning(pointcut = "execution(* com.onepiece.trading.service.*.*(..))", returning = "result")
+    public void afterSuccessfulExecution(JoinPoint joinPoint, Object result) {
+        logger.debug("🎉 Method {} completed with result: {}",
+                    joinPoint.getSignature().getName(), result);
+    }
+
+    // After throwing advice - exception handling (Google error tracking pattern)
+    @AfterThrowing(pointcut = "execution(* com.onepiece.trading.service.*.*(..))", throwing = "exception")
+    public void afterThrowingException(JoinPoint joinPoint, Exception exception) {
+        logger.error("💥 Method {} threw exception: {}",
+                    joinPoint.getSignature().getName(), exception.getMessage(), exception);
+
+        // Send to error tracking service (Sentry, Rollbar, etc.)
+        sendToErrorTracking(joinPoint, exception);
+    }
+
+    private void recordMethodMetrics(String methodName, long executionTime, String status) {
+        // Implementation for metrics recording
+        // This would integrate with Micrometer/Prometheus
+    }
+
+    private void sendToErrorTracking(JoinPoint joinPoint, Exception exception) {
+        // Implementation for error tracking
+        // This would integrate with Sentry, Rollbar, or similar
+    }
+}
+
+// TODO 3: SPRING BOOT ENTERPRISE FEATURES (COMPLETE IMPLEMENTATION)
+// ═══════════════════════════════════════════════════════════
+/*
+🎯 YOUR TASK: Implement complete Spring Boot enterprise features
+
+SPRING BOOT ENTERPRISE STACK:
+- Auto-configuration and starters
+- Actuator for monitoring and management
+- Security with JWT authentication
+- JPA/Hibernate with advanced features
+- Kafka for event-driven architecture
+- Microservices with service discovery
+- Performance optimization and caching
+- Reactive programming with WebFlux
+*/
+
+package com.onepiece.trading.controller;
+
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Max;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * 🏴‍☠️ Enterprise Character Trading Controller
+ *
+ * This demonstrates complete Spring Boot enterprise patterns:
+ * - RESTful API design with proper HTTP methods
+ * - Validation and error handling
+ * - Security with role-based access control
+ * - Caching for performance optimization
+ * - Pagination and sorting for large datasets
+ * - Comprehensive logging and monitoring
+ */
+@RestController
+@RequestMapping("/api/v1/characters")
+@Validated
+@Slf4j
+@CrossOrigin(origins = "http://localhost:3000") // React frontend
+public class CharacterController {
+
+    private final CharacterService characterService;
+    private final TradingService tradingService;
+    private final NotificationService notificationService;
+
+    // Constructor injection (Spring Boot best practice)
+    public CharacterController(CharacterService characterService,
+                             TradingService tradingService,
+                             NotificationService notificationService) {
+        this.characterService = characterService;
+        this.tradingService = tradingService;
+        this.notificationService = notificationService;
+    }
+
+    /**
+     * Get all characters with pagination, sorting, and filtering
+     * Demonstrates: Pagination, caching, validation, query parameters
+     */
+    @GetMapping
+    @Cacheable(value = "characters", key = "'page:' + #page + ':size:' + #size + ':crew:' + #crew",
+               unless = "#result.isEmpty()")
+    public ResponseEntity<PagedResponse<CharacterDto>> getAllCharacters(
+            @RequestParam(defaultValue = "0") @Min(0) int page,
+            @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size,
+            @RequestParam(required = false) String crew,
+            @RequestParam(required = false) @Min(0) Long minBounty,
+            @RequestParam(defaultValue = "bounty") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir) {
+
+        log.info("🔍 Fetching characters - page: {}, size: {}, crew: {}, minBounty: {}",
+                page, size, crew, minBounty);
+
+        // Create search criteria
+        CharacterSearchCriteria criteria = CharacterSearchCriteria.builder()
+            .crew(crew)
+            .minBounty(minBounty)
+            .build();
+
+        // Create pageable with sorting
+        Sort sort = Sort.by(sortDir.equalsIgnoreCase("desc") ?
+                           Sort.Direction.DESC : Sort.Direction.ASC, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        // Fetch characters
+        Page<Character> charactersPage = characterService.findAll(criteria, pageable);
+
+        // Convert to DTOs
+        List<CharacterDto> characterDtos = charactersPage.getContent().stream()
+            .map(this::convertToDto)
+            .collect(Collectors.toList());
+
+        // Build response
+        PagedResponse<CharacterDto> response = PagedResponse.<CharacterDto>builder()
+            .content(characterDtos)
+            .page(charactersPage.getNumber())
+            .size(charactersPage.getSize())
+            .totalElements(charactersPage.getTotalElements())
+            .totalPages(charactersPage.getTotalPages())
+            .first(charactersPage.isFirst())
+            .last(charactersPage.isLast())
+            .build();
+
+        log.info("✅ Retrieved {} characters out of {} total",
+                characterDtos.size(), charactersPage.getTotalElements());
+
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Get character by ID
+     * Demonstrates: Path variables, caching, error handling
+     */
+    @GetMapping("/{id}")
+    @Cacheable(value = "character", key = "#id")
+    public ResponseEntity<CharacterDto> getCharacter(@PathVariable @Min(1) Long id) {
+        log.info("🔍 Fetching character with id: {}", id);
+
+        Optional<Character> character = characterService.findById(id);
+
+        if (character.isPresent()) {
+            CharacterDto dto = convertToDto(character.get());
+            log.info("✅ Found character: {}", dto.getName());
+            return ResponseEntity.ok(dto);
+        } else {
+            log.warn("❌ Character not found with id: {}", id);
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * Create new character
+     * Demonstrates: POST method, validation, security, cache eviction
+     */
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    @CacheEvict(value = "characters", allEntries = true)
+    public ResponseEntity<CharacterDto> createCharacter(
+            @Valid @RequestBody CreateCharacterRequest request,
+            Authentication authentication) {
+
+        log.info("🆕 Creating new character: {} by user: {}",
+                request.getName(), authentication.getName());
+
+        try {
+            Character character = Character.builder()
+                .name(request.getName())
+                .bounty(request.getBounty())
+                .type(request.getType())
+                .crew(request.getCrewId() != null ?
+                      crewService.findById(request.getCrewId()).orElse(null) : null)
+                .createdBy(authentication.getName())
+                .build();
+
+            Character savedCharacter = characterService.save(character);
+            CharacterDto dto = convertToDto(savedCharacter);
+
+            // Send notification
+            notificationService.notifyCharacterCreated(savedCharacter);
+
+            log.info("✅ Character created successfully: {} with id: {}",
+                    dto.getName(), dto.getId());
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+
+        } catch (ValidationException e) {
+            log.error("❌ Validation error creating character: {}", e.getMessage());
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            log.error("❌ Error creating character: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
+     * Execute character trade
+     * Demonstrates: Complex business logic, transactions, security, async processing
+     */
+    @PostMapping("/{characterId}/trade")
+    @PreAuthorize("hasRole('TRADER')")
+    public ResponseEntity<TradeResult> tradeCharacter(
+            @PathVariable @Min(1) Long characterId,
+            @Valid @RequestBody TradeRequest request,
+            Authentication authentication) {
+
+        log.info("💰 Trade request for character {} by user {} - Price: {}",
+                characterId, authentication.getName(), request.getPrice());
+
+        try {
+            // Validate character exists
+            Character character = characterService.findById(characterId)
+                .orElseThrow(() -> new CharacterNotFoundException("Character not found: " + characterId));
+
+            // Execute trade
+            TradeResult result = tradingService.executeTrade(
+                characterId,
+                request,
+                authentication.getName()
+            );
+
+            if (result.isSuccessful()) {
+                log.info("✅ Trade executed successfully: {} - New balance: {}",
+                        result.getTradeId(), result.getNewBalance());
+
+                // Clear relevant caches
+                cacheManager.getCache("character").evict(characterId);
+                cacheManager.getCache("characters").clear();
+
+                return ResponseEntity.ok(result);
+            } else {
+                log.warn("❌ Trade failed: {}", result.getMessage());
+                return ResponseEntity.badRequest().body(result);
+            }
+
+        } catch (CharacterNotFoundException e) {
+            log.error("❌ Character not found for trade: {}", characterId);
+            return ResponseEntity.notFound().build();
+        } catch (InsufficientFundsException e) {
+            log.warn("❌ Insufficient funds for trade: {}", e.getMessage());
+            TradeResult errorResult = TradeResult.builder()
+                .status("FAILED")
+                .message("Insufficient funds for this trade")
+                .build();
+            return ResponseEntity.badRequest().body(errorResult);
+        } catch (Exception e) {
+            log.error("❌ Unexpected error during trade: {}", e.getMessage(), e);
+            TradeResult errorResult = TradeResult.builder()
+                .status("ERROR")
+                .message("An unexpected error occurred. Please try again.")
+                .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResult);
+        }
+    }
+
+    /**
+     * Get character trading history
+     * Demonstrates: Complex queries, pagination, security
+     */
+    @GetMapping("/{characterId}/trades")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<PagedResponse<TradeDto>> getCharacterTrades(
+            @PathVariable @Min(1) Long characterId,
+            @RequestParam(defaultValue = "0") @Min(0) int page,
+            @RequestParam(defaultValue = "10") @Min(1) @Max(50) int size) {
+
+        log.info("📊 Fetching trade history for character: {}", characterId);
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("executedAt").descending());
+        Page<Trade> tradesPage = tradingService.getCharacterTrades(characterId, pageable);
+
+        List<TradeDto> tradeDtos = tradesPage.getContent().stream()
+            .map(this::convertToTradeDto)
+            .collect(Collectors.toList());
+
+        PagedResponse<TradeDto> response = PagedResponse.<TradeDto>builder()
+            .content(tradeDtos)
+            .page(tradesPage.getNumber())
+            .size(tradesPage.getSize())
+            .totalElements(tradesPage.getTotalElements())
+            .totalPages(tradesPage.getTotalPages())
+            .build();
+
+        log.info("✅ Retrieved {} trades for character {}", tradeDtos.size(), characterId);
+
+        return ResponseEntity.ok(response);
+    }
+
+    // Helper methods for DTO conversion
+    private CharacterDto convertToDto(Character character) {
+        return CharacterDto.builder()
+            .id(character.getId())
+            .name(character.getName())
+            .bounty(character.getBounty())
+            .type(character.getType())
+            .crewName(character.getCrew() != null ? character.getCrew().getName() : null)
+            .marketValue(character.getMarketValue())
+            .createdAt(character.getCreatedAt())
+            .updatedAt(character.getUpdatedAt())
+            .build();
+    }
+
+    private TradeDto convertToTradeDto(Trade trade) {
+        return TradeDto.builder()
+            .id(trade.getId())
+            .buyerId(trade.getBuyerId())
+            .sellerId(trade.getSellerId())
+            .characterId(trade.getCharacterId())
+            .price(trade.getPrice())
+            .status(trade.getStatus())
+            .executedAt(trade.getExecutedAt())
+            .build();
     }
 }
 

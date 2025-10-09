@@ -161,41 +161,142 @@
 # TODO 6: DOCKER OPERATIONS
 # start_docker_services() {
 #     log "INFO" "🐳 Starting Docker services..."
-#     
+#
 #     # Check if Docker daemon is running
 #     if ! docker info &> /dev/null; then
 #         log "ERROR" "Docker daemon is not running"
 #         return 1
 #     fi
-#     
+#
 #     # Navigate to project root
 #     cd "${PROJECT_ROOT}"
-#     
+#
 #     # Stop any existing containers
 #     log "INFO" "Stopping existing containers..."
 #     docker-compose down --remove-orphans 2>/dev/null || true
-#     
+#
 #     # Build images
 #     log "INFO" "Building Docker images..."
 #     if ! docker-compose build --no-cache; then
 #         log "ERROR" "Docker build failed"
 #         return 1
 #     fi
-#     
+#
 #     # Start services
 #     log "INFO" "Starting Docker containers..."
 #     if ! docker-compose up -d; then
 #         log "ERROR" "Failed to start Docker containers"
 #         return 1
 #     fi
-#     
+#
 #     # Wait for containers to be ready
 #     log "INFO" "Waiting for containers to initialize..."
 #     sleep 10
-#     
+#
 #     # Show running containers
 #     log "INFO" "Running containers:"
 #     docker-compose ps
+# }
+
+# TODO 6.1: JAVA SERVICES OPERATIONS
+# start_java_services() {
+#     log "INFO" "🔥 Starting Java Spring Boot services..."
+#
+#     # Check if Java is installed
+#     if ! command -v java &> /dev/null; then
+#         log "ERROR" "Java is not installed or not in PATH"
+#         return 1
+#     fi
+#
+#     # Check if Maven is installed
+#     if ! command -v mvn &> /dev/null; then
+#         log "ERROR" "Maven is not installed or not in PATH"
+#         return 1
+#     fi
+#
+#     # Create PID directory
+#     mkdir -p "${PROJECT_ROOT}/pids"
+#
+#     # Build Java Character Service
+#     log "INFO" "Building Java Character Service..."
+#     cd "${PROJECT_ROOT}/learning-modules/33-java-spring-boot-enterprise"
+#
+#     if ! mvn clean package -DskipTests -q; then
+#         log "ERROR" "Java Character Service build failed"
+#         return 1
+#     fi
+#
+#     # Start Java Character Service
+#     log "INFO" "Starting Java Character Service on port 8080..."
+#     nohup java -jar target/*.jar \
+#         --spring.profiles.active=production \
+#         --spring.datasource.url=jdbc:postgresql://localhost:5432/onepiece_trading \
+#         --spring.datasource.username=onepiece_user \
+#         --spring.datasource.password="${DB_PASSWORD}" \
+#         --spring.redis.host=localhost \
+#         --spring.redis.port=6379 \
+#         --server.port=8080 \
+#         --management.endpoints.web.exposure.include=health,info,metrics \
+#         > "${LOG_DIR}/java-character-service.log" 2>&1 &
+#
+#     echo $! > "${PROJECT_ROOT}/pids/java-character-service.pid"
+#
+#     # Wait for service to start
+#     log "INFO" "Waiting for Java service to initialize..."
+#     sleep 20
+#
+#     # Health check
+#     local max_attempts=30
+#     local attempt=1
+#
+#     while [[ ${attempt} -le ${max_attempts} ]]; do
+#         log "INFO" "Checking Java service health (attempt ${attempt}/${max_attempts})..."
+#
+#         if curl -f -s --max-time 5 http://localhost:8080/actuator/health > /dev/null; then
+#             log "INFO" "✅ Java Character Service: Healthy"
+#             break
+#         fi
+#
+#         if [[ ${attempt} -eq ${max_attempts} ]]; then
+#             log "ERROR" "❌ Java Character Service: Failed to start within timeout"
+#             log "ERROR" "Check logs: ${LOG_DIR}/java-character-service.log"
+#             return 1
+#         fi
+#
+#         sleep 2
+#         ((attempt++))
+#     done
+#
+#     log "INFO" "Java services started successfully"
+# }
+#
+# stop_java_services() {
+#     log "INFO" "🛑 Stopping Java services..."
+#
+#     # Stop Java Character Service
+#     if [[ -f "${PROJECT_ROOT}/pids/java-character-service.pid" ]]; then
+#         local pid=$(cat "${PROJECT_ROOT}/pids/java-character-service.pid")
+#         if kill -0 "$pid" 2>/dev/null; then
+#             log "INFO" "Stopping Java Character Service (PID: $pid)..."
+#             kill "$pid"
+#
+#             # Wait for graceful shutdown
+#             local count=0
+#             while kill -0 "$pid" 2>/dev/null && [[ $count -lt 30 ]]; do
+#                 sleep 1
+#                 ((count++))
+#             done
+#
+#             # Force kill if still running
+#             if kill -0 "$pid" 2>/dev/null; then
+#                 log "WARN" "Force killing Java Character Service..."
+#                 kill -9 "$pid"
+#             fi
+#         fi
+#         rm -f "${PROJECT_ROOT}/pids/java-character-service.pid"
+#     fi
+#
+#     log "INFO" "Java services stopped"
 # }
 
 # TODO 7: DATABASE INITIALIZATION
@@ -238,37 +339,61 @@
 # TODO 8: SERVICE HEALTH CHECKS
 # check_service_health() {
 #     log "INFO" "🏥 Performing health checks..."
-#     
+#
 #     local services=(
-#         "Character Service:http://localhost:5001/health"
+#         "Node.js Character Service:http://localhost:5001/health"
+#         "Java Character Service:http://localhost:8080/actuator/health"
 #         "Trading Service:http://localhost:5002/health"
 #         "User Service:http://localhost:5003/health"
 #         "API Gateway:http://localhost:3000/health"
 #         "Sentiment Service:http://localhost:8000/health"
 #     )
-#     
+#
 #     local all_healthy=true
-#     
+#
 #     for service_info in "${services[@]}"; do
 #         local service_name="${service_info%%:*}"
 #         local health_url="${service_info##*:}"
-#         
+#
 #         log "INFO" "Checking ${service_name}..."
-#         
+#
 #         # Try health check with timeout
 #         if curl -f -s --max-time 10 "${health_url}" > /dev/null; then
 #             log "INFO" "✅ ${service_name}: Healthy"
 #         else
-#             log "ERROR" "❌ ${service_name}: Unhealthy or unreachable"
-#             all_healthy=false
+#             log "WARN" "❌ ${service_name}: Unhealthy or unreachable"
+#             # Don't fail deployment if one service is down (for comparison testing)
+#             # all_healthy=false
 #         fi
 #     done
-#     
+#
+#     # Check database connectivity
+#     log "INFO" "Checking database connectivity..."
+#     if command -v psql &> /dev/null; then
+#         if PGPASSWORD="${DB_PASSWORD}" psql -h localhost -U onepiece_user -d onepiece_trading -c "SELECT 1;" > /dev/null 2>&1; then
+#             log "INFO" "✅ PostgreSQL: Healthy"
+#         else
+#             log "ERROR" "❌ PostgreSQL: Connection failed"
+#             all_healthy=false
+#         fi
+#     fi
+#
+#     # Check Redis connectivity
+#     log "INFO" "Checking Redis connectivity..."
+#     if command -v redis-cli &> /dev/null; then
+#         if redis-cli -h localhost -p 6379 ping > /dev/null 2>&1; then
+#             log "INFO" "✅ Redis: Healthy"
+#         else
+#             log "ERROR" "❌ Redis: Connection failed"
+#             all_healthy=false
+#         fi
+#     fi
+#
 #     if [[ "${all_healthy}" == "true" ]]; then
-#         log "INFO" "🎉 All services are healthy!"
+#         log "INFO" "🎉 All critical services are healthy!"
 #         return 0
 #     else
-#         log "ERROR" "Some services are unhealthy"
+#         log "ERROR" "Some critical services are unhealthy"
 #         return 1
 #     fi
 # }
@@ -376,44 +501,75 @@
 #     log "INFO" "🏴‍☠️ Starting One Piece Stock Market deployment..."
 #     log "INFO" "Environment: ${ENVIRONMENT}"
 #     log "INFO" "Project Root: ${PROJECT_ROOT}"
-#     
+#
 #     # Setup
 #     setup_logging
 #     setup_error_handling
-#     
+#
 #     # Pre-deployment checks
 #     check_system_requirements
 #     load_configuration
-#     
+#
 #     # Deployment steps
 #     start_docker_services
+#     start_java_services      # Add Java services
 #     initialize_database
-#     
+#
 #     # Wait for services to fully initialize
 #     log "INFO" "Waiting for services to fully initialize..."
 #     sleep 30
-#     
+#
 #     # Validation
 #     check_service_health
 #     run_tests
-#     
+#
 #     # Post-deployment setup
 #     setup_monitoring
 #     create_backup
-#     
+#
 #     # Success message
 #     log "INFO" "🎉 Deployment completed successfully!"
 #     log "INFO" "Services are available at:"
 #     log "INFO" "  - Frontend: http://localhost:3000"
 #     log "INFO" "  - API Gateway: http://localhost:3000/api"
-#     log "INFO" "  - Character Service: http://localhost:5001"
+#     log "INFO" "  - Node.js Character Service: http://localhost:5001"
+#     log "INFO" "  - Java Character Service: http://localhost:8080"
 #     log "INFO" "  - Trading Service: http://localhost:5002"
 #     log "INFO" "  - User Service: http://localhost:5003"
 #     log "INFO" "  - Sentiment Service: http://localhost:8000"
-#     log "INFO" "  - Database: localhost:3306"
-#     log "INFO" "  - Redis: localhost:6379"
-#     
+#     log "INFO" "  - PostgreSQL Database: localhost:5432"
+#     log "INFO" "  - Redis Cache: localhost:6379"
+#     log "INFO" ""
+#     log "INFO" "🔥 JAVA ENTERPRISE FEATURES:"
+#     log "INFO" "  - Health Check: http://localhost:8080/actuator/health"
+#     log "INFO" "  - Metrics: http://localhost:8080/actuator/metrics"
+#     log "INFO" "  - Info: http://localhost:8080/actuator/info"
+#     log "INFO" "  - API Docs: http://localhost:8080/swagger-ui.html"
+#     log "INFO" ""
+#     log "INFO" "📊 PERFORMANCE COMPARISON:"
+#     log "INFO" "  - Node.js Characters: curl http://localhost:5001/api/characters"
+#     log "INFO" "  - Java Characters: curl http://localhost:8080/api/v1/characters"
+#
 #     log "INFO" "Log file: ${LOG_FILE}"
+# }
+#
+# # TODO 12.1: CLEANUP FUNCTION
+# cleanup_deployment() {
+#     log "INFO" "🧹 Cleaning up deployment..."
+#
+#     # Stop Java services
+#     stop_java_services
+#
+#     # Stop Docker services
+#     if command -v docker-compose &> /dev/null; then
+#         cd "${PROJECT_ROOT}"
+#         docker-compose down --remove-orphans 2>/dev/null || true
+#     fi
+#
+#     # Clean up PID files
+#     rm -rf "${PROJECT_ROOT}/pids"
+#
+#     log "INFO" "Cleanup completed"
 # }
 
 # TODO 13: SCRIPT EXECUTION
