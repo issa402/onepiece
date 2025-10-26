@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- 
+    ============================================================================
+    📚 LEARNING GUIDE: Maven POM Configuration (pom.xml)
+    ============================================================================
+    
+    🎯 PURPOSE:
+    This Maven POM (Project Object Model) file defines the Java Spring Boot API Gateway.
+    It serves as the enterprise-grade backend that:
+    - Acts as the main API gateway for all client requests
+    - Orchestrates calls to Python microservices
+    - Handles authentication, authorization, and security
+    - Manages business logic and data aggregation
+    - Provides enterprise patterns and scalability
+    
+    🔧 TECHNOLOGIES USED:
+    - Spring Boot 3.x: Modern Java framework with auto-configuration
+    - Spring Security: Authentication and authorization
+    - Spring Data JPA: Database ORM with PostgreSQL
+    - Spring Web: RESTful API development
+    - Spring Cloud Gateway: API gateway patterns
+    - Maven: Dependency management and build automation
+    - Micrometer: Metrics and monitoring
+    - TestContainers: Integration testing with real databases
+    
+    📖 IN-DEPTH EXPLANATION:
+    
+    **Why Java Spring Boot for API Gateway?**
+    1. **Enterprise Maturity**: Proven in large-scale production systems
+    2. **Security**: Comprehensive security framework built-in
+    3. **Microservices**: Excellent support for service orchestration
+    4. **Performance**: JVM optimization and connection pooling
+    5. **Ecosystem**: Vast library ecosystem and community support
+    6. **Career Value**: High demand in enterprise environments
+    
+    **API Gateway Pattern Benefits:**
+    - Single entry point for all client requests
+    - Cross-cutting concerns (auth, logging, rate limiting)
+    - Service discovery and load balancing
+    - Request/response transformation
+    - Circuit breaker and retry logic
+    
+    **Spring Boot Starter Dependencies:**
+    - spring-boot-starter-web: REST API capabilities
+    - spring-boot-starter-data-jpa: Database integration
+    - spring-boot-starter-security: Authentication/authorization
+    - spring-boot-starter-validation: Request validation
+    - spring-boot-starter-actuator: Health checks and metrics
+    
+    📚 LEARNING MODULE REFERENCES:
+    - Module 33 (Java Spring Boot): Lines 100-300 - Spring Boot fundamentals
+    - Module 33 (Java Spring Boot): Lines 400-600 - REST API development
+    - Module 33 (Java Spring Boot): Lines 700-900 - Database integration
+    - Module 33 (Java Spring Boot): Lines 1000-1200 - Security configuration
+    
+    ✅ IMPLEMENTATION CHECKLIST:
+    [ ] Configure Spring Boot parent and version
+    [ ] Add core Spring Boot starters
+    [ ] Include database dependencies (PostgreSQL, JPA)
+    [ ] Add security dependencies
+    [ ] Configure testing dependencies
+    [ ] Add monitoring and metrics
+    [ ] Include HTTP client for microservice calls
+    [ ] Add validation and documentation
+    [ ] Configure build plugins
+    [ ] Set Java version and encoding
+    
+    🎓 WHAT YOU NEED TO LEARN/UNDERSTAND:
+    - Maven dependency management and scopes
+    - Spring Boot starter concept and auto-configuration
+    - Dependency injection and inversion of control
+    - JPA/Hibernate for database operations
+    - Spring Security authentication flows
+    - RESTful API design principles
+    - Microservice communication patterns
+    - Testing strategies (unit, integration, contract)
+    
+    🚀 REAL-WORLD EXAMPLES:
+    - Netflix: Spring Boot for microservices architecture
+    - Airbnb: API gateway for service orchestration
+    - Spotify: Spring Security for user authentication
+    - LinkedIn: Spring Data JPA for data persistence
+    
+    ⚠️ DEPENDENCY MANAGEMENT BEST PRACTICES:
+    - Use Spring Boot BOM for version management
+    - Exclude transitive dependencies when needed
+    - Keep dependencies up to date for security
+    - Use specific versions for critical dependencies
+    - Separate test dependencies from runtime
+    
+    ============================================================================
+    -->
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.0</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.sportsbetting</groupId>
+    <artifactId>consensus-api-gateway</artifactId>
+    <version>1.0.0</version>
+    <name>Sports Betting Consensus API Gateway</name>
+    <description>Enterprise API Gateway for Sports Betting Consensus Aggregator</description>
+    <packaging>jar</packaging>
+
+    <properties>
+        <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spring-cloud.version>2023.0.0</spring-cloud.version>
+        <testcontainers.version>1.19.3</testcontainers.version>
+    </properties>
+
+    <dependencies>
+        <!-- Core Spring Boot Starters -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- Database -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+        <!-- HTTP Client for Microservice Communication -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+
+        <!-- JSON Processing -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+
+        <!-- API Documentation -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+
+        <!-- Monitoring and Metrics -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+
+        <!-- JWT Authentication -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.12.3</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.12.3</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>0.12.3</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Testing Dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Development Tools -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers-bom</artifactId>
+                <version>${testcontainers.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-devtools</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

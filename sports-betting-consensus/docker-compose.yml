@@ -1,0 +1,337 @@
+# ============================================================================
+# 📚 LEARNING GUIDE: Docker Compose Orchestration (docker-compose.yml)
+# ============================================================================
+#
+# 🎯 PURPOSE:
+# This Docker Compose file orchestrates the entire Sports Betting Consensus
+# microservices architecture for local development. It manages:
+# - All application services (Python, Java, React, MCP)
+# - Supporting infrastructure (PostgreSQL, Redis)
+# - Service networking and communication
+# - Volume management for data persistence
+# - Environment configuration and secrets
+#
+# 🔧 TECHNOLOGIES USED:
+# - Docker Compose: Multi-container application orchestration
+# - Docker Networks: Service-to-service communication
+# - Docker Volumes: Data persistence and sharing
+# - Environment Variables: Configuration management
+# - Health Checks: Service availability monitoring
+# - Dependency Management: Service startup ordering
+#
+# 📖 IN-DEPTH EXPLANATION:
+#
+# **Microservices Architecture:**
+# 1. **Frontend (React/Next.js)**: User interface on port 3000
+# 2. **Python Backend**: FastAPI scraping service on port 8000
+# 3. **Java API Gateway**: Spring Boot enterprise API on port 8080
+# 4. **MCP Server**: AI agent integration on port 3001
+# 5. **PostgreSQL**: Primary database on port 5432
+# 6. **Redis**: Caching and message broker on port 6379
+#
+# **Service Communication Flow:**
+# Frontend → Java API Gateway → Python Backend → Database
+#                ↓
+# MCP Server → Java API Gateway (for AI agent queries)
+#
+# **Docker Compose Benefits:**
+# - Single command deployment: `docker-compose up`
+# - Consistent development environment across team
+# - Easy service scaling and management
+# - Integrated logging and monitoring
+# - Network isolation and security
+#
+# **Volume Strategy:**
+# - Database volumes for data persistence
+# - Source code volumes for hot reloading in development
+# - Log volumes for centralized logging
+# - Cache volumes for performance optimization
+#
+# **Environment Management:**
+# - .env file for sensitive configuration
+# - Service-specific environment variables
+# - Development vs production configurations
+# - Secret management and security
+#
+# 📚 LEARNING MODULE REFERENCES:
+# - Module 34 (TypeScript/Node.js): Lines 1400-1600 - Docker containerization
+# - Module 35 (React/Next.js): Lines 1600-1800 - Next.js Docker deployment
+# - Module 33 (Java Spring Boot): Lines 1500-1700 - Spring Boot containerization
+#
+# ✅ IMPLEMENTATION CHECKLIST:
+# [ ] Define all microservices with proper ports
+# [ ] Configure PostgreSQL with initialization scripts
+# [ ] Set up Redis for caching and message queuing
+# [ ] Create Docker network for service communication
+# [ ] Configure volumes for data persistence
+# [ ] Add health checks for all services
+# [ ] Set up environment variable management
+# [ ] Configure service dependencies and startup order
+# [ ] Add development vs production profiles
+# [ ] Include monitoring and logging configuration
+#
+# 🎓 WHAT YOU NEED TO LEARN/UNDERSTAND:
+# - Docker Compose syntax and service definitions
+# - Container networking and port mapping
+# - Volume mounting and data persistence
+# - Environment variable management
+# - Health check implementation
+# - Service dependency management
+# - Docker image building and optimization
+# - Container security best practices
+#
+# 🚀 REAL-WORLD EXAMPLES:
+# - Netflix: Microservices orchestration with containers
+# - Uber: Docker Compose for local development
+# - Airbnb: Container-based service architecture
+# - Spotify: Multi-service application deployment
+#
+# ⚠️ DEVELOPMENT VS PRODUCTION:
+# - Development: Hot reloading, debug ports, local volumes
+# - Production: Optimized images, secrets management, scaling
+# - Use docker-compose.override.yml for environment-specific configs
+# - Implement proper logging and monitoring in production
+#
+# 🔧 USEFUL COMMANDS:
+# - `docker-compose up -d`: Start all services in background
+# - `docker-compose logs -f [service]`: Follow service logs
+# - `docker-compose exec [service] bash`: Access service shell
+# - `docker-compose down -v`: Stop and remove volumes
+# - `docker-compose build --no-cache`: Rebuild images
+#
+# ============================================================================
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: sports-betting-postgres
+    environment:
+      POSTGRES_DB: sports_betting
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d sports_betting"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sports-betting-network
+
+  # Redis Cache and Message Broker
+  redis:
+    image: redis:7-alpine
+    container_name: sports-betting-redis
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sports-betting-network
+
+  # Python FastAPI Backend (Scraping & AI Service)
+  python-backend:
+    build:
+      context: ./backend-python
+      dockerfile: Dockerfile
+    container_name: sports-betting-python
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/sports_betting
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - DEBUG=true
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend-python:/app
+      - python_logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - sports-betting-network
+    restart: unless-stopped
+
+  # Java Spring Boot API Gateway
+  java-backend:
+    build:
+      context: ./backend-java
+      dockerfile: Dockerfile
+    container_name: sports-betting-java
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/sports_betting
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+      - PYTHON_SERVICE_URL=http://python-backend:8000
+      - JWT_SECRET=${JWT_SECRET:-your-secret-key}
+    ports:
+      - "8080:8080"
+    volumes:
+      - java_logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      python-backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - sports-betting-network
+    restart: unless-stopped
+
+  # React/Next.js Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: sports-betting-frontend
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8080
+      - NEXT_PUBLIC_MCP_URL=http://localhost:3001
+      - NODE_ENV=development
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - java-backend
+    networks:
+      - sports-betting-network
+    restart: unless-stopped
+
+  # MCP Server for AI Agent Integration
+  mcp-server:
+    build:
+      context: ./mcp-server
+      dockerfile: Dockerfile
+    container_name: sports-betting-mcp
+    environment:
+      - NODE_ENV=development
+      - PYTHON_API_URL=http://python-backend:8000
+      - JAVA_API_URL=http://java-backend:8080
+      - JWT_SECRET=${JWT_SECRET:-your-secret-key}
+      - ALLOWED_ORIGINS=http://localhost:3000
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./mcp-server:/app
+      - /app/node_modules
+      - mcp_logs:/app/logs
+    depends_on:
+      - python-backend
+      - java-backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - sports-betting-network
+    restart: unless-stopped
+
+  # Celery Worker for Background Tasks
+  celery-worker:
+    build:
+      context: ./backend-python
+      dockerfile: Dockerfile
+    container_name: sports-betting-celery
+    command: celery -A app.core.celery worker --loglevel=info
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/sports_betting
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    volumes:
+      - ./backend-python:/app
+      - celery_logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - sports-betting-network
+    restart: unless-stopped
+
+  # Celery Beat Scheduler
+  celery-beat:
+    build:
+      context: ./backend-python
+      dockerfile: Dockerfile
+    container_name: sports-betting-scheduler
+    command: celery -A app.core.celery beat --loglevel=info
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/sports_betting
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+    volumes:
+      - ./backend-python:/app
+      - scheduler_logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - sports-betting-network
+    restart: unless-stopped
+
+# Docker Networks
+networks:
+  sports-betting-network:
+    driver: bridge
+    name: sports-betting-network
+
+# Docker Volumes
+volumes:
+  postgres_data:
+    name: sports-betting-postgres-data
+  redis_data:
+    name: sports-betting-redis-data
+  python_logs:
+    name: sports-betting-python-logs
+  java_logs:
+    name: sports-betting-java-logs
+  mcp_logs:
+    name: sports-betting-mcp-logs
+  celery_logs:
+    name: sports-betting-celery-logs
+  scheduler_logs:
+    name: sports-betting-scheduler-logs
