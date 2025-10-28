@@ -386,8 +386,24 @@ async def health_check():
 #    - HOW IT WORKS: background_tasks.add_task(function_name, param1, param2)
 #
 # **YOUR CODE HERE:**
+from app.services.prediction_service import PredictionService
 # from app.services.prediction_service import PredictionService
-#
+
+@app.post("/api/v1/predictions/consensus", response model = PredictionResponse)
+async def get_consensus_prediction(
+    query: GameQuery,
+    background_tasks: BackgroundTasks
+):
+
+    try:
+        prediction_service = PredictionService()
+        result = await prediction_service.get_consensus(
+            f"{query.team1} vs {query.team2}",
+            query.date
+        )
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
 # @app.post("/api/v1/predictions/consensus", response_model=PredictionResponse)
 # async def get_consensus_prediction(
 #     query: GameQuery,
@@ -413,11 +429,98 @@ async def health_check():
 #         raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
 
 # ============================================================================
-# CONTINUE IMPLEMENTING MORE ENDPOINTS...
+# 🎯 WHAT TO DO NEXT - COMPLETE IMPLEMENTATION GUIDE
 # ============================================================================
-# 🧪 TEST YOUR CODE:
-# Run with: uvicorn app.main:app --reload --port 8000
-# Visit: http://localhost:8000/docs for API documentation
+#
+# **CONGRATULATIONS!** You've learned the fundamentals. Now complete the implementation:
+#
+# 🔹 **STEP 1: Finish this file (main.py)**
+#    - Implement the remaining Pydantic models (GameQuery, PredictionResponse)
+#    - Add the health check endpoint (@app.get("/health"))
+#    - Add the main prediction endpoint (@app.post("/api/v1/predictions/consensus"))
+#    - Test with: uvicorn app.main:app --reload --port 8000
+#    - Visit: http://localhost:8000/docs for API documentation
+#
+# 🔹 **STEP 2: Move to scraper_service.py**
+#    - Location: sports-betting-consensus/backend-python/app/services/scraper_service.py
+#    - What you'll build: Web scraping service that gets betting predictions from multiple sites
+#    - Key concepts: asyncio, aiohttp, BeautifulSoup, rate limiting, anti-bot measures
+#    - Real-world example: How Google scrapes millions of websites concurrently
+#
+# 🔹 **STEP 3: Move to ai_analysis_service.py**
+#    - Location: sports-betting-consensus/backend-python/app/services/ai_analysis_service.py
+#    - What you'll build: AI service that analyzes scraped text and extracts structured predictions
+#    - Key concepts: OpenAI API, Anthropic Claude, prompt engineering, data validation
+#    - Real-world example: How ChatGPT processes and structures unstructured text
+#
+# 🔹 **STEP 4: Move to React frontend**
+#    - Location: sports-betting-consensus/frontend/src/components/PredictionDashboard.tsx
+#    - What you'll build: React dashboard that displays betting predictions and analytics
+#    - Key concepts: React hooks, state management, API integration, real-time updates
+#    - Real-world example: How Netflix builds their streaming interface
+#
+# 🔹 **STEP 5: Move to Java Spring Boot**
+#    - Location: sports-betting-consensus/backend-java/pom.xml
+#    - What you'll build: Enterprise API gateway that orchestrates microservices
+#    - Key concepts: Spring Boot, Maven, REST APIs, microservice communication
+#    - Real-world example: How Uber coordinates their ride-sharing microservices
+#
+# 🔹 **STEP 6: Move to MCP Server**
+#    - Location: sports-betting-consensus/mcp-server/src/index.ts
+#    - What you'll build: AI agent integration server using Model Context Protocol
+#    - Key concepts: TypeScript, Express.js, AI tool integration, protocol implementation
+#    - Real-world example: How AI assistants access external tools and services
+
+# ============================================================================
+# 📚 WANT TO MASTER FASTAPI FIRST?
+# ============================================================================
+#
+# **🎯 COMPREHENSIVE FASTAPI LEARNING MODULE AVAILABLE!**
+#
+# **Location:** `/home/iscjmz/onepiece/learning-modules/37-fastapi-mastery/`
+#
+# **What you'll get:**
+# - ✅ **Complete FastAPI mastery guide** (README.md)
+# - ✅ **Hands-on coding lab** (01-fastapi-mastery-coding-lab.py)
+# - ✅ **Real-world examples** from Netflix, Uber, Microsoft
+# - ✅ **Production patterns** and best practices
+# - ✅ **Career guidance** and salary expectations
+#
+# **To start the FastAPI mastery module:**
+# ```bash
+# cd /home/iscjmz/onepiece/learning-modules/37-fastapi-mastery
+# python 01-fastapi-mastery-coding-lab.py
+# # Visit http://localhost:8000/docs
+# ```
+#
+# **This module covers:**
+# - FastAPI vs Flask vs Django comparison
+# - Async/await and high-performance APIs
+# - Pydantic models and validation
+# - Database integration with SQLAlchemy
+# - Authentication and security (JWT, OAuth2)
+# - Background tasks and WebSocket support
+# - Testing, documentation, and deployment
+# - Microservices and production patterns
+
+# ============================================================================
+# 🧪 TEST YOUR CURRENT CODE:
+# ============================================================================
+#
+# **Run your FastAPI app:**
+# ```bash
+# cd /home/iscjmz/onepiece/sports-betting-consensus/backend-python
+# uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+# ```
+#
+# **Visit these URLs:**
+# - http://localhost:8000/ (root endpoint)
+# - http://localhost:8000/docs (interactive API documentation)
+# - http://localhost:8000/redoc (alternative documentation)
+# - http://localhost:8000/health (health check - implement this!)
+#
+# **Fix the bug in your CORS middleware:**
+# Change `allow_method` to `allow_methods` (plural) in your middleware configuration
 
 # YOUR IMPLEMENTATION HERE:
 # (Write your FastAPI application below)
@@ -445,7 +548,20 @@ async def health_check():
 # from app.services.scraper_service import ScraperService
 # from app.services.prediction_service import PredictionService
 # from app.models.prediction import Prediction, Game, Source
+setup_logging()
+logger = logging.getLogger(__name__)
 
+@asynccontextmanager
+async def lifespan( app: FastAPI):
+    logger.info("Application Starting")
+    Base.metadata.create_all(bind = engine)
+    logger.info("Database tables created")
+
+    app.state.scraper_service = ScraperService()
+    app.state.prediction_service = PredictionService()
+    logger.info("Service initialized")
+    yield
+    logger.info("Application Shutting Down")
 # # Setup logging
 # setup_logging()
 # logger = logging.getLogger(__name__)
@@ -470,6 +586,7 @@ async def health_check():
 #
 #     # Shutdown
 #     logger.info("🛑 Shutting down Sports Betting Consensus Aggregator")
+
 
 # # Create FastAPI application
 # app = FastAPI(

@@ -1,0 +1,39 @@
+{
+  "name": "fastapi-mastery-module",
+  "version": "1.0.0",
+  "description": "Complete FastAPI mastery learning module with hands-on labs",
+  "main": "01-fastapi-mastery-coding-lab.py",
+  "scripts": {
+    "start": "python 01-fastapi-mastery-coding-lab.py",
+    "install-deps": "pip install -r requirements.txt",
+    "test": "pytest tests/",
+    "docs": "echo 'Visit http://localhost:8000/docs after running the lab'"
+  },
+  "keywords": [
+    "fastapi",
+    "python",
+    "web-framework",
+    "api",
+    "async",
+    "pydantic",
+    "learning",
+    "tutorial",
+    "hands-on"
+  ],
+  "author": "One Piece Learning Modules",
+  "license": "MIT",
+  "dependencies": {
+    "note": "Python dependencies are in requirements.txt"
+  },
+  "devDependencies": {
+    "note": "Python dev dependencies are in requirements-dev.txt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/issa402/onepiece.git"
+  },
+  "bugs": {
+    "url": "https://github.com/issa402/onepiece/issues"
+  },
+  "homepage": "https://github.com/issa402/onepiece#readme"
+}
