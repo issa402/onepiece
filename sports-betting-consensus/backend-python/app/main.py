@@ -130,6 +130,7 @@ from fastapi import FastAPI, HTTPException, Depends, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
+
 # **DETAILED BREAKDOWN:**
 #
 # 🔹 **FastAPI**: The main web framework class
@@ -173,6 +174,8 @@ from pydantic import BaseModel
 # ============================================================================
 #
 # **WHAT YOU WROTE:**
+
+
 app = FastAPI(
     title = "Sports Betting Consensus Aggregator",
     description = "AI-powered betting predictions",
@@ -210,12 +213,12 @@ app = FastAPI(
 # ============================================================================
 #
 # **WHAT YOU WROTE:**
+
 app.add_middleware(
-    CORSMiddleware(
-        allow_origins = ["http://localhost:3000"],
-        allow_methods = ["*"],  # ⚠️ NOTE: You wrote "allow_method" but it should be "allow_methods"
-        allow_headers = ["*"]
-    )
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_methods=["*"],
+    allow_headers=["*"]
 )
 
 # **DETAILED BREAKDOWN:**
@@ -300,6 +303,7 @@ class GameQuery(BaseModel):
     date: Optional[str] = None
     sport: Optional[str] = None
 
+
 class PredictionResponse(BaseModel):
     predicted_winner:str
     confidence: float
@@ -349,6 +353,7 @@ class PredictionResponse(BaseModel):
 #         "version": "1.0.0"
 #     }
 
+
 @app.get("/health")
 async def health_check():
     return{
@@ -386,10 +391,12 @@ async def health_check():
 #    - HOW IT WORKS: background_tasks.add_task(function_name, param1, param2)
 #
 # **YOUR CODE HERE:**
-from app.services.prediction_service import PredictionService
+# from app.services.prediction_service import PredictionService
 # from app.services.prediction_service import PredictionService
 
-@app.post("/api/v1/predictions/consensus", response model = PredictionResponse)
+
+
+@app.post("/api/v1/predictions/consensus", response_model=PredictionResponse)
 async def get_consensus_prediction(
     query: GameQuery,
     background_tasks: BackgroundTasks
@@ -548,20 +555,20 @@ async def get_consensus_prediction(
 # from app.services.scraper_service import ScraperService
 # from app.services.prediction_service import PredictionService
 # from app.models.prediction import Prediction, Game, Source
-setup_logging()
-logger = logging.getLogger(__name__)
+# setup_logging()
+# logger = logging.getLogger(__name__)
 
-@asynccontextmanager
-async def lifespan( app: FastAPI):
-    logger.info("Application Starting")
-    Base.metadata.create_all(bind = engine)
-    logger.info("Database tables created")
-
-    app.state.scraper_service = ScraperService()
-    app.state.prediction_service = PredictionService()
-    logger.info("Service initialized")
-    yield
-    logger.info("Application Shutting Down")
+# @asynccontextmanager
+# async def lifespan( app: FastAPI):
+#     logger.info("Application Starting")
+#     Base.metadata.create_all(bind = engine)
+#     logger.info("Database tables created")
+#
+#     app.state.scraper_service = ScraperService()
+#     app.state.prediction_service = PredictionService()
+#     logger.info("Service initialized")
+#     yield
+#     logger.info("Application Shutting Down")
 # # Setup logging
 # setup_logging()
 # logger = logging.getLogger(__name__)

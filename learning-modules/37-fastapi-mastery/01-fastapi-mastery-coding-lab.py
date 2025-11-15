@@ -125,6 +125,7 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
+
 class Product(Base):
     """Product database model"""
     __tablename__ = "products"

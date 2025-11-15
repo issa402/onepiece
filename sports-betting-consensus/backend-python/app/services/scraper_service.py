@@ -292,6 +292,22 @@
 #    - HOW IT WORKS: async with self.semaphore: # Only 5 requests can run at once
 #
 # **YOUR CODE HERE:**
+class ScraperService:
+    def __init__(self):
+        self.semaphore = None  # Will implement later
+        self.logger = None     # Will implement later
+
+    async def scrape_betting_sites(self, game_query):
+        """Mock scraper service for testing"""
+        return {
+            "sites_scraped": ["draftkings", "fanduel", "betmgm"],
+            "predictions": [
+                {"site": "draftkings", "prediction": "Team A", "confidence": 0.75},
+                {"site": "fanduel", "prediction": "Team A", "confidence": 0.80},
+                {"site": "betmgm", "prediction": "Team B", "confidence": 0.65}
+            ]
+        }
+
 # class ScraperService:
 #     def __init__(self):
 #         self.semaphore = asyncio.Semaphore(5)  # Max 5 concurrent requests

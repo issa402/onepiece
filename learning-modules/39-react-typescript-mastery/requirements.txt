@@ -1,0 +1,267 @@
+# React + TypeScript Mastery Module - Dependencies
+# This file lists all the tools and packages needed for the learning module
+
+# ============================================================================
+# 🎯 CORE REACT + TYPESCRIPT DEPENDENCIES
+# ============================================================================
+
+# React 18 - Latest React with concurrent features
+react@^18.2.0
+react-dom@^18.2.0
+
+# TypeScript - Static type checking
+typescript@^4.9.5
+
+# TSX - TypeScript execution engine for running .tsx files directly
+tsx@^3.12.6
+
+# ============================================================================
+# 🎯 ROUTING AND NAVIGATION
+# ============================================================================
+
+# React Router - Client-side routing
+react-router-dom@^6.8.1
+
+# ============================================================================
+# 🎯 STATE MANAGEMENT
+# ============================================================================
+
+# Redux Toolkit - Modern Redux with less boilerplate
+@reduxjs/toolkit@^1.9.3
+react-redux@^8.0.5
+
+# React Query - Server state management
+@tanstack/react-query@^4.28.0
+
+# Zustand - Lightweight state management
+zustand@^4.3.6
+
+# Immer - Immutable state updates
+immer@^9.0.19
+
+# ============================================================================
+# 🎯 STYLING AND UI
+# ============================================================================
+
+# Styled Components - CSS-in-JS
+styled-components@^5.3.9
+@types/styled-components@^5.1.26
+
+# Emotion - CSS-in-JS alternative
+@emotion/react@^11.10.6
+@emotion/styled@^11.10.6
+
+# Tailwind CSS - Utility-first CSS framework
+tailwindcss@^3.2.7
+autoprefixer@^10.4.14
+postcss@^8.4.21
+
+# Headless UI - Unstyled accessible components
+@headlessui/react@^1.7.13
+@heroicons/react@^2.0.16
+
+# ============================================================================
+# 🎯 ANIMATION AND INTERACTIONS
+# ============================================================================
+
+# Framer Motion - Production-ready motion library
+framer-motion@^10.8.5
+
+# React Spring - Spring-physics based animations
+react-spring@^9.6.1
+
+# ============================================================================
+# 🎯 FORMS AND VALIDATION
+# ============================================================================
+
+# React Hook Form - Performant forms with easy validation
+react-hook-form@^7.43.8
+
+# Yup - Schema validation
+yup@^1.0.2
+
+# Hookform Resolvers - Validation resolvers for react-hook-form
+@hookform/resolvers@^2.9.11
+
+# ============================================================================
+# 🎯 HTTP CLIENT AND API
+# ============================================================================
+
+# Axios - Promise-based HTTP client
+axios@^1.3.4
+
+# Socket.io Client - Real-time communication
+socket.io-client@^4.6.1
+
+# ============================================================================
+# 🎯 UTILITIES AND HELPERS
+# ============================================================================
+
+# Date-fns - Modern date utility library
+date-fns@^2.29.3
+
+# Lodash - Utility library
+lodash@^4.17.21
+@types/lodash@^4.14.191
+
+# UUID - Generate unique identifiers
+uuid@^9.0.0
+@types/uuid@^9.0.1
+
+# Classnames - Conditional CSS classes
+classnames@^2.3.2
+
+# ============================================================================
+# 🎯 DRAG AND DROP
+# ============================================================================
+
+# React Beautiful DnD - Drag and drop for lists
+react-beautiful-dnd@^13.1.1
+@types/react-beautiful-dnd@^13.1.4
+
+# ============================================================================
+# 🎯 VIRTUALIZATION AND PERFORMANCE
+# ============================================================================
+
+# React Virtualized - Efficiently render large lists
+react-virtualized@^9.22.5
+@types/react-virtualized@^9.21.21
+
+# ============================================================================
+# 🎯 DATA VISUALIZATION
+# ============================================================================
+
+# Recharts - Composable charting library
+recharts@^2.5.0
+
+# ============================================================================
+# 🎯 FORM COMPONENTS
+# ============================================================================
+
+# React Select - Flexible select component
+react-select@^5.7.2
+
+# React Datepicker - Date picker component
+react-datepicker@^4.10.0
+
+# ============================================================================
+# 🎯 BUILD TOOLS AND DEVELOPMENT
+# ============================================================================
+
+# Vite - Fast build tool
+vite@^4.2.0
+@vitejs/plugin-react@^3.1.0
+@vitejs/plugin-react-swc@^3.2.0
+
+# Node Types
+@types/node@^18.15.3
+
+# ============================================================================
+# 🎯 LINTING AND FORMATTING
+# ============================================================================
+
+# ESLint - JavaScript/TypeScript linting
+eslint@^8.36.0
+@typescript-eslint/eslint-plugin@^5.57.0
+@typescript-eslint/parser@^5.57.0
+eslint-plugin-react@^7.32.2
+eslint-plugin-react-hooks@^4.6.0
+eslint-plugin-react-refresh@^0.3.4
+
+# Prettier - Code formatting
+prettier@^2.8.7
+
+# ============================================================================
+# 🎯 TESTING
+# ============================================================================
+
+# Jest - Testing framework
+jest@^29.5.0
+@types/jest@^29.5.0
+ts-jest@^29.0.5
+
+# React Testing Library - React component testing
+@testing-library/react@^14.0.0
+@testing-library/jest-dom@^5.16.5
+@testing-library/user-event@^14.4.3
+
+# MSW - Mock Service Worker for API mocking
+msw@^1.2.1
+
+# ============================================================================
+# 🎯 STORYBOOK - COMPONENT DOCUMENTATION
+# ============================================================================
+
+# Storybook - Component development environment
+@storybook/react@^7.0.2
+@storybook/addon-essentials@^7.0.2
+@storybook/addon-interactions@^7.0.2
+@storybook/addon-links@^7.0.2
+@storybook/blocks@^7.0.2
+@storybook/testing-library@^0.0.14-next.2
+
+# Chromatic - Visual testing for Storybook
+chromatic@^6.17.4
+
+# ============================================================================
+# 🎯 INSTALLATION INSTRUCTIONS
+# ============================================================================
+
+# To install all dependencies, run one of these commands:
+
+# Using npm:
+# npm install
+
+# Using yarn:
+# yarn install
+
+# Using pnpm:
+# pnpm install
+
+# ============================================================================
+# 🎯 DEVELOPMENT SETUP
+# ============================================================================
+
+# 1. Install Node.js 16+ and npm 8+
+# 2. Clone the repository
+# 3. Navigate to this module directory
+# 4. Run: npm install
+# 5. Start development: npm run start
+# 6. Open browser to see the application
+
+# ============================================================================
+# 🎯 LEARNING PATH
+# ============================================================================
+
+# Week 1: TypeScript Fundamentals + React Basics
+# - Run: npm run start (fundamentals lab)
+# - Complete: 01-react-typescript-fundamentals-lab.tsx
+
+# Week 2: Advanced Patterns
+# - Run: npm run advanced (advanced patterns lab)
+# - Complete: 02-advanced-patterns-lab.tsx
+
+# Week 3-4: Real-world Projects
+# - Run: npm run todo-app (todo application)
+# - Run: npm run dashboard (e-commerce dashboard)
+# - Run: npm run chat-app (real-time chat)
+
+# Week 5: Testing
+# - Run: npm test (run all tests)
+# - Run: npm run test:coverage (coverage report)
+
+# Week 6: Production Optimization
+# - Run: npm run build (production build)
+# - Run: npm run preview (preview production build)
+
+# ============================================================================
+# 🎯 CAREER OUTCOMES
+# ============================================================================
+
+# After completing this module, you'll be qualified for:
+# - Frontend Developer: $80K-$120K
+# - Senior Frontend Developer: $120K-$200K
+# - Staff Frontend Engineer: $200K-$350K
+# - Principal Frontend Engineer: $300K-$500K
+
+# Target companies: Facebook, Netflix, Airbnb, Discord, Spotify, GitHub, Figma

@@ -434,6 +434,20 @@
 #    - HOW IT WORKS: Try OpenAI first, if it fails, automatically try Anthropic
 #
 # **YOUR CODE HERE:**
+class AIAnalysisService:
+    def __init__(self):
+        # Mock implementation for testing
+        pass
+
+    async def extract_prediction(self, text_content):
+        """Mock AI analysis service for testing"""
+        return {
+            "predicted_winner": "Team A",
+            "confidence": 0.75,
+            "reasoning": "Based on recent performance and betting trends",
+            "sentiment": 0.6
+        }
+
 # class AIAnalysisService:
 #     def __init__(self):
 #         self.openai_client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)

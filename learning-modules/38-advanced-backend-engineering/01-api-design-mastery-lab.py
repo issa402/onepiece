@@ -83,7 +83,10 @@ class UserCreate(BaseModel):
     - Email domain validation (no disposable emails)
     - Password strength requirements
     - Age verification for content restrictions
+    
     """
+
+    
     username: str = Field(
         ..., 
         min_length=3, 
