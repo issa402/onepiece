@@ -1,18 +1,58 @@
 """
-🏴‍☠️ SYSTEM DESIGN & MICROSERVICES - HANDS-ON CODING LAB
-═══════════════════════════════════════════════════════════
+🏴‍☠️ ARCHITECTURE PATTERNS MASTERY - COMPLETE SYSTEM DESIGN ENGINEERING
+═══════════════════════════════════════════════════════════════════════════════
 
-🎯 WHAT YOU'LL CODE TODAY:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Microservices architecture with API Gateway
-✅ Event-driven communication with message queues
-✅ Service discovery and load balancing
-✅ Circuit breaker pattern for resilience
-✅ CQRS (Command Query Responsibility Segregation)
-✅ Event sourcing for audit trails
+🎯 WHAT YOU'LL MASTER IN THIS LAB (ROADMAP.SH ALIGNED):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-💰 SALARY IMPACT: +$60K-?20K (System design + microservices)
+📚 PART 1: ARCHITECTURE PATTERNS FUNDAMENTALS (What & Why)
+   - What microservices are and why they power Netflix, Uber, Amazon
+   - Why monolithic architectures become bottlenecks at scale
+   - How distributed systems enable horizontal scaling
+   - What service-oriented architecture provides for large teams
+   - Why architecture patterns are critical for system reliability
+
+⚡ PART 2: MICROSERVICES PATTERNS (Production Architecture)
+   - Microservices decomposition and service boundaries
+   - API Gateway patterns for request routing and authentication
+   - Service discovery and load balancing strategies
+   - Circuit breaker patterns for fault tolerance
+   - Bulkhead patterns for resource isolation
+
+🗄️ PART 3: EVENT-DRIVEN ARCHITECTURE (Scalable Communication)
+   - Event-driven communication with message queues
+   - CQRS (Command Query Responsibility Segregation) patterns
+   - Event sourcing for audit trails and data recovery
+   - Saga patterns for distributed transactions
+   - Event streaming for real-time data processing
+
+🔒 PART 4: RESILIENCE PATTERNS (Enterprise Grade)
+   - Retry patterns with exponential backoff
+   - Timeout patterns for preventing resource exhaustion
+   - Rate limiting and throttling for API protection
+   - Health checks and monitoring for service reliability
+   - Graceful degradation and fallback mechanisms
+
+🚀 PART 5: ADVANCED PATTERNS (Senior Engineer Level)
+   - CQRS with event sourcing for complex domains
+   - Strangler Fig pattern for legacy system migration
+   - Backend for Frontend (BFF) patterns
+   - Multi-tenant architecture patterns
+   - Distributed caching and data consistency patterns
+
+💰 SALARY IMPACT: $110K → $400K+ (Architecture expertise commands top salaries)
 🏢 COMPANIES: Netflix, Uber, Amazon, Google, all unicorn startups
+
+📖 ROADMAP.SH BACKEND CONCEPTS COVERED:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ Architecture Patterns (microservices, monolith, service-oriented)
+✅ Distributed Systems (service communication, data consistency)
+✅ Scalability (horizontal scaling, load balancing, partitioning)
+✅ Resilience (fault tolerance, circuit breakers, retry patterns)
+✅ Event-Driven Architecture (messaging, CQRS, event sourcing)
+✅ API Design (gateway patterns, versioning, documentation)
+✅ Performance (caching, optimization, resource management)
+✅ Monitoring (observability, health checks, system metrics)
 
 📚 WHY MICROSERVICES ARCHITECTURE DOMINATES:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

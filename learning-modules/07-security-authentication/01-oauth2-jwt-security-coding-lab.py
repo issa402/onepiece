@@ -1,18 +1,54 @@
 """
-🏴‍☠️ SECURITY & AUTHENTICATION MASTERY - HANDS-ON CODING LAB
-═══════════════════════════════════════════════════════════
+🏴‍☠️ SECURITY & AUTHENTICATION MASTERY - COMPLETE BACKEND SECURITY ENGINEERING
+═══════════════════════════════════════════════════════════════════════════════
 
-🎯 WHAT YOU'LL CODE TODAY:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ OAuth2 + JWT authentication for One Piece trading platform
-✅ API security with rate limiting and input validation
-✅ OWASP Top 10 security practices implementation
-✅ Role-based access control (RBAC) for trading permissions
-✅ Security headers and HTTPS enforcement
-✅ API key management and rotation
+🎯 WHAT YOU'LL MASTER IN THIS LAB (ROADMAP.SH ALIGNED):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-💰 SALARY IMPACT: +?0K-?00K (Security expertise is PREMIUM)
+📚 PART 1: AUTHENTICATION SYSTEMS (What & Why)
+   - What OAuth2 is and why it powers Google, Facebook, GitHub authentication
+   - Why JWT tokens are used by Netflix, Uber, and all modern APIs
+   - How password hashing prevents data breaches that cost millions
+   - Why session management is critical for user security
+   - How multi-factor authentication prevents 99.9% of account takeovers
+
+⚡ PART 2: HASHING ALGORITHMS (Production Security)
+   - What bcrypt is and why it's the gold standard for password hashing (used by GitHub, Stripe)
+   - How salt rounds prevent rainbow table attacks that compromised LinkedIn, Adobe
+   - Why MD5 and SHA1 are broken and dangerous (caused major security breaches)
+   - How Argon2 provides even better security for high-value applications (banking, crypto)
+   - When to use HMAC-SHA256 for API signature verification (AWS, Stripe APIs)
+   - What PBKDF2 provides for legacy system compatibility
+   - How scrypt offers memory-hard hashing for additional security
+   - Why timing attacks matter and how to prevent them
+
+🔒 PART 3: API SECURITY (Enterprise Grade)
+   - Rate limiting to prevent DDoS attacks and API abuse
+   - Input validation and sanitization to prevent injection attacks
+   - CORS configuration for secure cross-origin requests
+   - API key management and rotation strategies
+   - Security headers that prevent XSS and clickjacking
+
+🚀 PART 4: ADVANCED SECURITY PATTERNS (Senior Engineer Level)
+   - Role-based access control (RBAC) for complex permissions
+   - OAuth2 flows for third-party integrations
+   - Security monitoring and intrusion detection
+   - Compliance with GDPR, SOX, and PCI DSS requirements
+   - Security testing and vulnerability assessment
+
+💰 SALARY IMPACT: $90K → $350K+ (Security expertise commands premium salaries)
 🏢 COMPANIES: All fintech, banks, FAANG (security is non-negotiable)
+
+📖 ROADMAP.SH BACKEND CONCEPTS COVERED:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ Authentication (OAuth2, JWT, session management, MFA)
+✅ Hashing Algorithms (bcrypt, Argon2, HMAC, salt rounds)
+✅ API Security (rate limiting, input validation, CORS, headers)
+✅ Authorization (RBAC, permissions, access control)
+✅ Security Testing (vulnerability scanning, penetration testing)
+✅ Compliance (GDPR, SOX, PCI DSS, security audits)
+✅ Monitoring (security logs, intrusion detection, alerting)
+✅ Encryption (TLS/SSL, data at rest, key management)
 
 📚 WHY SECURITY EXPERTISE = BIG MONEY:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -96,7 +132,170 @@
 Implement secure JWT authentication for One Piece trading!
 """
 
-# TODO 1: CREATE JWT AUTHENTICATION SERVICE
+# ═══════════════════════════════════════════════════════════
+# 🧪 HANDS-ON LAB 1: HASHING ALGORITHMS MASTERY
+# ═══════════════════════════════════════════════════════════
+
+"""
+📚 HASHING ALGORITHMS FOR PRODUCTION SECURITY:
+
+🔥 WHY PROPER HASHING PREVENTS MILLION-DOLLAR BREACHES:
+
+1. LINKEDIN BREACH (2012):
+   - 6.5 million passwords stolen
+   - Used unsalted SHA-1 hashing (BROKEN!)
+   - Passwords cracked within hours
+   - Could have been prevented with bcrypt
+
+2. ADOBE BREACH (2013):
+   - 38 million user accounts compromised
+   - Used weak encryption instead of proper hashing
+   - Password hints stored in plaintext
+   - Massive class-action lawsuit
+
+3. PROPER HASHING SUCCESS STORIES:
+   - GitHub: Uses bcrypt with high cost factors
+   - Stripe: Uses Argon2 for payment security
+   - Auth0: Implements multiple hashing algorithms
+
+🎯 YOUR CODING MISSION:
+Implement production-grade password hashing that prevents breaches!
+"""
+
+# TODO 1: IMPLEMENT BCRYPT PASSWORD HASHING
+# ═══════════════════════════════════════════════════════════
+"""
+🎯 YOUR TASK: Implement bcrypt hashing for user passwords
+
+🔥 WHY BCRYPT IS THE GOLD STANDARD:
+- Adaptive hashing: cost factor increases over time
+- Built-in salt generation (prevents rainbow tables)
+- Time-tested: used by GitHub, Heroku, Stack Overflow
+- Resistant to timing attacks
+"""
+
+import bcrypt
+import hashlib
+import hmac
+import secrets
+from argon2 import PasswordHasher
+from argon2.exceptions import VerifyMismatchError
+
+class ProductionPasswordSecurity:
+    """
+    🏴‍☠️ PRODUCTION-GRADE PASSWORD SECURITY CLASS
+
+    This class implements multiple hashing algorithms used by:
+    - bcrypt: GitHub, Heroku, Stack Overflow
+    - Argon2: Bitwarden, 1Password, crypto wallets
+    - PBKDF2: Django, Apple, Microsoft
+    - scrypt: Tarsnap, Litecoin, memory-hard hashing
+    """
+
+    def __init__(self):
+        # bcrypt cost factor (rounds): 12 = ~250ms, 14 = ~1s, 16 = ~4s
+        # Higher cost = more secure but slower
+        self.bcrypt_rounds = 12  # Recommended for 2024
+
+        # Argon2 parameters (memory_cost in KB, time_cost in iterations)
+        self.argon2_hasher = PasswordHasher(
+            memory_cost=65536,  # 64 MB memory usage
+            time_cost=3,        # 3 iterations
+            parallelism=1       # Single thread
+        )
+
+    def hash_password_bcrypt(self, password: str) -> str:
+        """
+        🔒 BCRYPT HASHING - INDUSTRY STANDARD
+
+        Used by: GitHub, Heroku, Stack Overflow, Ruby on Rails
+
+        Why bcrypt is secure:
+        1. Adaptive: cost factor can increase over time
+        2. Salt included: prevents rainbow table attacks
+        3. Slow by design: makes brute force impractical
+        4. Battle-tested: 20+ years of security analysis
+        """
+        # Convert password to bytes (bcrypt requirement)
+        password_bytes = password.encode('utf-8')
+
+        # Generate salt and hash (salt is automatically included)
+        hashed = bcrypt.hashpw(password_bytes, bcrypt.gensalt(rounds=self.bcrypt_rounds))
+
+        # Return as string for database storage
+        return hashed.decode('utf-8')
+
+    def verify_password_bcrypt(self, password: str, hashed: str) -> bool:
+        """
+        🔍 BCRYPT VERIFICATION - SECURE PASSWORD CHECKING
+
+        Why this is secure:
+        1. Constant-time comparison (prevents timing attacks)
+        2. Salt is extracted from stored hash
+        3. Same cost factor as original hash
+        """
+        try:
+            password_bytes = password.encode('utf-8')
+            hashed_bytes = hashed.encode('utf-8')
+            return bcrypt.checkpw(password_bytes, hashed_bytes)
+        except Exception:
+            return False  # Invalid hash format or other error
+
+    def hash_password_argon2(self, password: str) -> str:
+        """
+        🚀 ARGON2 HASHING - NEXT-GENERATION SECURITY
+
+        Used by: Bitwarden, 1Password, crypto wallets, high-security apps
+
+        Why Argon2 is even more secure:
+        1. Memory-hard: requires significant RAM (prevents ASIC attacks)
+        2. Winner of Password Hashing Competition (2015)
+        3. Three variants: Argon2d, Argon2i, Argon2id
+        4. Configurable memory, time, and parallelism costs
+        """
+        return self.argon2_hasher.hash(password)
+
+    def verify_password_argon2(self, password: str, hashed: str) -> bool:
+        """
+        🔍 ARGON2 VERIFICATION - MAXIMUM SECURITY
+        """
+        try:
+            self.argon2_hasher.verify(hashed, password)
+            return True
+        except VerifyMismatchError:
+            return False
+
+    def hash_password_pbkdf2(self, password: str, salt: bytes = None) -> tuple:
+        """
+        🔧 PBKDF2 HASHING - LEGACY COMPATIBILITY
+
+        Used by: Django, Apple, Microsoft, FIPS compliance
+
+        Why PBKDF2 is still relevant:
+        1. FIPS 140-2 approved (government/enterprise compliance)
+        2. Widely supported across platforms
+        3. Configurable iteration count
+        4. Good for legacy system integration
+        """
+        if salt is None:
+            salt = secrets.token_bytes(32)  # 256-bit salt
+
+        # 100,000 iterations (OWASP recommendation for 2024)
+        iterations = 100000
+
+        # Use SHA-256 as the underlying hash function
+        hashed = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, iterations)
+
+        return hashed, salt, iterations
+
+    def verify_password_pbkdf2(self, password: str, stored_hash: bytes, salt: bytes, iterations: int) -> bool:
+        """
+        🔍 PBKDF2 VERIFICATION - LEGACY SYSTEM SUPPORT
+        """
+        computed_hash = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, iterations)
+        return hmac.compare_digest(stored_hash, computed_hash)  # Timing-safe comparison
+
+# TODO 2: IMPLEMENT HMAC FOR API SIGNATURES
 # ═══════════════════════════════════════════════════════════
 """
 🎯 YOUR TASK: Create JWT service for One Piece trading platform
