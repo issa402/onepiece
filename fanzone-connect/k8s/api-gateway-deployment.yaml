@@ -1,0 +1,105 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# 🏆 FANZONE CONNECT - API GATEWAY DEPLOYMENT
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# PURPOSE:
+# Deploys the API Gateway service to Kubernetes.
+# Manages replicas, rolling updates, health checks, and resource limits.
+#
+# USAGE:
+#   kubectl apply -f api-gateway-deployment.yaml
+#   kubectl get deployments -n fanzone-connect
+#   kubectl rollout status deployment/api-gateway -n fanzone-connect
+#
+# KEY CONCEPTS:
+# - Deployment: Manages ReplicaSets and Pods
+# - ReplicaSet: Ensures desired number of pod replicas
+# - Pod: Smallest deployable unit (one or more containers)
+# - Rolling Update: Zero-downtime deployments
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# TODO: apiVersion: apps/v1
+# TODO: kind: Deployment
+# TODO: metadata:
+#         name: api-gateway
+#         namespace: fanzone-connect
+#         labels:
+#           app: api-gateway
+#           tier: backend
+
+# ─────────────────────────────────────────────────────────────────────────────
+# SPEC - Deployment Configuration
+# ─────────────────────────────────────────────────────────────────────────────
+# TODO: spec:
+#         replicas: 3  # Run 3 instances for high availability
+#         
+#         selector:
+#           matchLabels:
+#             app: api-gateway
+#         
+#         strategy:
+#           type: RollingUpdate
+#           rollingUpdate:
+#             maxSurge: 1        # Can have 1 extra pod during update
+#             maxUnavailable: 0  # Never have 0 pods available
+
+# ─────────────────────────────────────────────────────────────────────────────
+# POD TEMPLATE
+# ─────────────────────────────────────────────────────────────────────────────
+# TODO: template:
+#         metadata:
+#           labels:
+#             app: api-gateway
+#         spec:
+#           containers:
+#           - name: api-gateway
+#             image: ghcr.io/fanzone/api-gateway:latest
+#             ports:
+#             - containerPort: 8000
+#             
+#             # Environment variables from ConfigMap and Secrets
+#             envFrom:
+#             - configMapRef:
+#                 name: fanzone-config
+#             - secretRef:
+#                 name: fanzone-secrets
+#             
+#             # Resource limits
+#             resources:
+#               requests:
+#                 cpu: "100m"
+#                 memory: "256Mi"
+#               limits:
+#                 cpu: "500m"
+#                 memory: "512Mi"
+#             
+#             # Liveness probe - restart if unhealthy
+#             livenessProbe:
+#               httpGet:
+#                 path: /health
+#                 port: 8000
+#               initialDelaySeconds: 30
+#               periodSeconds: 10
+#               failureThreshold: 3
+#             
+#             # Readiness probe - don't send traffic until ready
+#             readinessProbe:
+#               httpGet:
+#                 path: /ready
+#                 port: 8000
+#               initialDelaySeconds: 5
+#               periodSeconds: 5
+
+# ─────────────────────────────────────────────────────────────────────────────
+# AFFINITY & ANTI-AFFINITY (spread pods across nodes)
+# ─────────────────────────────────────────────────────────────────────────────
+# TODO: Add pod anti-affinity to spread replicas across nodes
+#       podAntiAffinity:
+#         preferredDuringSchedulingIgnoredDuringExecution:
+#         - weight: 100
+#           podAffinityTerm:
+#             labelSelector:
+#               matchLabels:
+#                 app: api-gateway
+#             topologyKey: kubernetes.io/hostname
+

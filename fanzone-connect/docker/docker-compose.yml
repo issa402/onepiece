@@ -1,0 +1,145 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# 🏆 FANZONE CONNECT - DOCKER COMPOSE CONFIGURATION
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# PURPOSE:
+# Defines and orchestrates all services needed for FANZONE CONNECT.
+# One command (docker-compose up) starts the entire application stack.
+#
+# USAGE:
+#   docker-compose up -d              # Start all services in background
+#   docker-compose down               # Stop all services
+#   docker-compose logs -f api        # Follow logs for api service
+#   docker-compose ps                 # List running services
+#   docker-compose exec api bash      # Shell into container
+#
+# SERVICES DEFINED:
+# 1. api-gateway      - Main API entry point (FastAPI)
+# 2. user-service     - User management microservice
+# 3. match-service    - Match data microservice
+# 4. notification-svc - Push notifications
+# 5. postgres         - PostgreSQL database
+# 6. mongodb          - MongoDB for event store
+# 7. redis            - Redis for caching and pub/sub
+# 8. nginx            - Reverse proxy and load balancer
+#
+# LINUX/BASH INTEGRATION:
+# - Environment variables from .env file
+# - Volume mounts for persistent data
+# - Network configuration
+# - Health checks for dependencies
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# version: "3.8"  # Compose file version
+
+# ─────────────────────────────────────────────────────────────────────────────
+# SERVICES
+# ─────────────────────────────────────────────────────────────────────────────
+
+# services:
+#   # ─────────────────────────────────────────────────────────────────────────
+#   # API GATEWAY
+#   # ─────────────────────────────────────────────────────────────────────────
+#   api-gateway:
+#     # TODO: build context and dockerfile
+#     # TODO: Set container_name
+#     # TODO: Map ports (8000:8000)
+#     # TODO: Set environment variables from .env
+#     # TODO: Depends on postgres, redis, mongodb
+#     # TODO: Add health check
+#     # TODO: Connect to fanzone-network
+#     # TODO: Restart policy (unless-stopped)
+#
+#   # ─────────────────────────────────────────────────────────────────────────
+#   # USER SERVICE
+#   # ─────────────────────────────────────────────────────────────────────────
+#   user-service:
+#     # TODO: Build from services/user-service
+#     # TODO: Set environment variables
+#     # TODO: Depends on postgres, redis
+#     # TODO: Internal port only (not exposed to host)
+#
+#   # ─────────────────────────────────────────────────────────────────────────
+#   # MATCH SERVICE
+#   # ─────────────────────────────────────────────────────────────────────────
+#   match-service:
+#     # TODO: Build from services/match-service
+#     # TODO: Set environment variables
+#     # TODO: Depends on postgres, redis, mongodb
+#
+#   # ─────────────────────────────────────────────────────────────────────────
+#   # NOTIFICATION SERVICE
+#   # ─────────────────────────────────────────────────────────────────────────
+#   notification-service:
+#     # TODO: Build from services/notification-service
+#     # TODO: Depends on redis (for pub/sub)
+#
+#   # ─────────────────────────────────────────────────────────────────────────
+#   # POSTGRESQL DATABASE
+#   # ─────────────────────────────────────────────────────────────────────────
+#   postgres:
+#     # TODO: Use postgres:15-alpine image
+#     # TODO: Set container_name
+#     # TODO: Set POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB from env
+#     # TODO: Mount volume for data persistence
+#     # TODO: Health check with pg_isready
+#     # TODO: Expose port 5432 (dev only, remove in prod)
+#
+#   # ─────────────────────────────────────────────────────────────────────────
+#   # MONGODB DATABASE
+#   # ─────────────────────────────────────────────────────────────────────────
+#   mongodb:
+#     # TODO: Use mongo:6.0 image
+#     # TODO: Set root username and password
+#     # TODO: Mount volume for data persistence
+#     # TODO: Health check
+#
+#   # ─────────────────────────────────────────────────────────────────────────
+#   # REDIS CACHE
+#   # ─────────────────────────────────────────────────────────────────────────
+#   redis:
+#     # TODO: Use redis:7-alpine image
+#     # TODO: Set maxmemory and eviction policy
+#     # TODO: Mount volume for persistence (optional)
+#     # TODO: Health check with redis-cli ping
+#
+#   # ─────────────────────────────────────────────────────────────────────────
+#   # NGINX REVERSE PROXY
+#   # ─────────────────────────────────────────────────────────────────────────
+#   nginx:
+#     # TODO: Use nginx:alpine image
+#     # TODO: Mount nginx.conf from host
+#     # TODO: Mount SSL certificates
+#     # TODO: Map ports 80 and 443
+#     # TODO: Depends on api-gateway
+
+# ─────────────────────────────────────────────────────────────────────────────
+# VOLUMES (Persistent data)
+# ─────────────────────────────────────────────────────────────────────────────
+# volumes:
+#   postgres_data:       # PostgreSQL data
+#   mongodb_data:        # MongoDB data
+#   redis_data:          # Redis RDB snapshots
+
+# ─────────────────────────────────────────────────────────────────────────────
+# NETWORKS
+# ─────────────────────────────────────────────────────────────────────────────
+# networks:
+#   fanzone-network:
+#     driver: bridge
+#     # All services on same network can communicate by service name
+#     # e.g., api-gateway can connect to postgres:5432
+
+# ─────────────────────────────────────────────────────────────────────────────
+# ENVIRONMENT VARIABLES
+# ─────────────────────────────────────────────────────────────────────────────
+# Create a .env file with:
+# POSTGRES_USER=fanzone
+# POSTGRES_PASSWORD=secretpassword
+# POSTGRES_DB=fanzone_db
+# MONGO_ROOT_USERNAME=admin
+# MONGO_ROOT_PASSWORD=secretpassword
+# REDIS_PASSWORD=secretpassword
+# JWT_SECRET=your-jwt-secret
+# API_KEY=your-api-key
+

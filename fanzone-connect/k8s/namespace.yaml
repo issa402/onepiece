@@ -1,0 +1,49 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# 🏆 FANZONE CONNECT - KUBERNETES NAMESPACE
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# PURPOSE:
+# Creates an isolated namespace for all FANZONE CONNECT resources.
+# Namespaces let you run multiple environments (dev, staging, prod) in same cluster.
+#
+# USAGE:
+#   kubectl apply -f namespace.yaml
+#   kubectl get namespaces
+#
+# WHY NAMESPACES:
+# - Resource isolation between environments
+# - Access control (RBAC) at namespace level
+# - Resource quotas per namespace
+# - Easier cleanup (delete namespace = delete everything in it)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# TODO: Define apiVersion: v1
+# TODO: Define kind: Namespace
+# TODO: Define metadata:
+#         name: fanzone-connect
+#         labels:
+#           app: fanzone-connect
+#           environment: production
+
+# ─────────────────────────────────────────────────────────────────────────────
+# RESOURCE QUOTA (limit resources in namespace)
+# ─────────────────────────────────────────────────────────────────────────────
+# TODO: Create ResourceQuota to limit:
+#       - requests.cpu: "10"
+#       - requests.memory: "20Gi"
+#       - limits.cpu: "20"
+#       - limits.memory: "40Gi"
+#       - pods: "50"
+#       - services: "20"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# LIMIT RANGE (default limits for pods)
+# ─────────────────────────────────────────────────────────────────────────────
+# TODO: Create LimitRange for default container limits:
+#       default:
+#         cpu: "500m"
+#         memory: "512Mi"
+#       defaultRequest:
+#         cpu: "100m"
+#         memory: "128Mi"
+

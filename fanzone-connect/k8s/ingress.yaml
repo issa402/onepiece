@@ -1,0 +1,111 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# 🏆 FANZONE CONNECT - KUBERNETES INGRESS
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# PURPOSE:
+# Ingress manages external HTTP/HTTPS access to services.
+# Acts as a smart router - routes traffic based on hostname and path.
+#
+# WHY INGRESS:
+# - Single entry point (one IP/load balancer for many services)
+# - Path-based routing (/api → api-gateway, /admin → admin-service)
+# - Host-based routing (api.fanzone.com, admin.fanzone.com)
+# - SSL/TLS termination
+# - Rate limiting, authentication (with annotations)
+#
+# PREREQUISITES:
+# - Ingress Controller installed (nginx-ingress, traefik, etc.)
+# - cert-manager for automatic SSL (optional)
+#
+# USAGE:
+#   kubectl apply -f ingress.yaml
+#   kubectl get ingress -n fanzone-connect
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# TODO: apiVersion: networking.k8s.io/v1
+# TODO: kind: Ingress
+# TODO: metadata:
+#         name: fanzone-ingress
+#         namespace: fanzone-connect
+#         annotations:
+#           # Nginx ingress annotations
+#           kubernetes.io/ingress.class: nginx
+#           nginx.ingress.kubernetes.io/ssl-redirect: "true"
+#           nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+#           
+#           # Rate limiting
+#           nginx.ingress.kubernetes.io/limit-rps: "100"
+#           
+#           # SSL with cert-manager
+#           cert-manager.io/cluster-issuer: "letsencrypt-prod"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# TLS CONFIGURATION
+# ─────────────────────────────────────────────────────────────────────────────
+# TODO: spec:
+#         tls:
+#         - hosts:
+#           - api.fanzone-connect.com
+#           - www.fanzone-connect.com
+#           secretName: fanzone-tls-secret
+
+# ─────────────────────────────────────────────────────────────────────────────
+# ROUTING RULES
+# ─────────────────────────────────────────────────────────────────────────────
+# TODO: rules:
+#       - host: api.fanzone-connect.com
+#         http:
+#           paths:
+#           # API Gateway - main entry point
+#           - path: /
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: api-gateway
+#                 port:
+#                   number: 80
+#           
+#           # Direct to user service
+#           - path: /users
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: user-service
+#                 port:
+#                   number: 8001
+#           
+#           # Direct to match service
+#           - path: /matches
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: match-service
+#                 port:
+#                   number: 8002
+#           
+#           # WebSocket for real-time (notifications)
+#           - path: /ws
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: notification-service
+#                 port:
+#                   number: 8003
+
+# ─────────────────────────────────────────────────────────────────────────────
+# MULTIPLE HOSTS (subdomains)
+# ─────────────────────────────────────────────────────────────────────────────
+# TODO: Add rule for admin.fanzone-connect.com → admin-service
+# TODO: Add rule for ws.fanzone-connect.com → websocket-service
+
+# ─────────────────────────────────────────────────────────────────────────────
+# WORLD CUP TRAFFIC HANDLING
+# ─────────────────────────────────────────────────────────────────────────────
+# TODO: Add annotations for:
+#       - Increased connection limits during matches
+#       - Sticky sessions for WebSocket
+#       - CORS headers
+#       nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+#       nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+#       nginx.ingress.kubernetes.io/affinity: "cookie"
+

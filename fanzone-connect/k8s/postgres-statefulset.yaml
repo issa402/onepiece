@@ -1,0 +1,117 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# 🏆 FANZONE CONNECT - POSTGRESQL STATEFULSET
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# PURPOSE:
+# Runs PostgreSQL as a StatefulSet for persistent, ordered deployment.
+# StatefulSets are for stateful apps that need stable network identity and storage.
+#
+# WHY STATEFULSET (not Deployment):
+# - Stable pod names (postgres-0, postgres-1, not random)
+# - Ordered deployment and scaling
+# - Persistent storage that survives pod restarts
+# - Stable network identity for replication
+#
+# USAGE:
+#   kubectl apply -f postgres-statefulset.yaml
+#   kubectl get statefulsets -n fanzone-connect
+#   kubectl exec -it postgres-0 -n fanzone-connect -- psql -U fanzone
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# TODO: apiVersion: apps/v1
+# TODO: kind: StatefulSet
+# TODO: metadata:
+#         name: postgres
+#         namespace: fanzone-connect
+
+# ─────────────────────────────────────────────────────────────────────────────
+# STATEFULSET SPEC
+# ─────────────────────────────────────────────────────────────────────────────
+# TODO: spec:
+#         serviceName: postgres-headless  # Headless service for DNS
+#         replicas: 1  # Single instance (or 3 for HA with streaming replication)
+#         
+#         selector:
+#           matchLabels:
+#             app: postgres
+#         
+#         template:
+#           metadata:
+#             labels:
+#               app: postgres
+#           spec:
+#             containers:
+#             - name: postgres
+#               image: postgres:15-alpine
+#               ports:
+#               - containerPort: 5432
+#               
+#               env:
+#               - name: POSTGRES_USER
+#                 valueFrom:
+#                   secretKeyRef:
+#                     name: fanzone-secrets
+#                     key: POSTGRES_USER
+#               - name: POSTGRES_PASSWORD
+#                 valueFrom:
+#                   secretKeyRef:
+#                     name: fanzone-secrets
+#                     key: POSTGRES_PASSWORD
+#               - name: POSTGRES_DB
+#                 value: fanzone_db
+#               - name: PGDATA
+#                 value: /var/lib/postgresql/data/pgdata
+#               
+#               volumeMounts:
+#               - name: postgres-data
+#                 mountPath: /var/lib/postgresql/data
+#               
+#               resources:
+#                 requests:
+#                   cpu: "500m"
+#                   memory: "1Gi"
+#                 limits:
+#                   cpu: "2"
+#                   memory: "4Gi"
+#               
+#               livenessProbe:
+#                 exec:
+#                   command: ["pg_isready", "-U", "fanzone"]
+#                 initialDelaySeconds: 30
+#                 periodSeconds: 10
+#               
+#               readinessProbe:
+#                 exec:
+#                   command: ["pg_isready", "-U", "fanzone"]
+#                 initialDelaySeconds: 5
+#                 periodSeconds: 5
+
+# ─────────────────────────────────────────────────────────────────────────────
+# VOLUME CLAIM TEMPLATE (dynamic PVC creation)
+# ─────────────────────────────────────────────────────────────────────────────
+# TODO: volumeClaimTemplates:
+#       - metadata:
+#           name: postgres-data
+#         spec:
+#           accessModes: ["ReadWriteOnce"]
+#           storageClassName: standard  # Or your cloud provider's storage class
+#           resources:
+#             requests:
+#               storage: 50Gi
+
+# ─────────────────────────────────────────────────────────────────────────────
+# INIT CONTAINER (optional - for custom initialization)
+# ─────────────────────────────────────────────────────────────────────────────
+# TODO: Add initContainer to:
+#       - Run database migrations
+#       - Restore from backup on first start
+#       - Set up replication
+
+# ─────────────────────────────────────────────────────────────────────────────
+# HIGH AVAILABILITY SETUP
+# ─────────────────────────────────────────────────────────────────────────────
+# TODO: For production HA:
+#       - Use Patroni or Stolon for automatic failover
+#       - 3 replicas with streaming replication
+#       - PgBouncer for connection pooling
+

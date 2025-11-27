@@ -1,0 +1,92 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# 🏆 FANZONE CONNECT - KUBERNETES SERVICES
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# PURPOSE:
+# Services provide stable networking for pods.
+# Pods are ephemeral (they die and restart), Services are stable endpoints.
+#
+# SERVICE TYPES:
+# - ClusterIP: Internal only (default)
+# - NodePort: Expose on each node's IP
+# - LoadBalancer: Cloud provider load balancer
+# - ExternalName: DNS alias to external service
+#
+# USAGE:
+#   kubectl apply -f services.yaml
+#   kubectl get services -n fanzone-connect
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# ─────────────────────────────────────────────────────────────────────────────
+# API GATEWAY SERVICE (LoadBalancer - external access)
+# ─────────────────────────────────────────────────────────────────────────────
+# TODO: apiVersion: v1
+# TODO: kind: Service
+# TODO: metadata:
+#         name: api-gateway
+#         namespace: fanzone-connect
+# TODO: spec:
+#         type: LoadBalancer
+#         selector:
+#           app: api-gateway
+#         ports:
+#         - port: 80
+#           targetPort: 8000
+#           protocol: TCP
+
+# ---
+
+# ─────────────────────────────────────────────────────────────────────────────
+# USER SERVICE (ClusterIP - internal only)
+# ─────────────────────────────────────────────────────────────────────────────
+# TODO: Create ClusterIP service for user-service
+#       Port 8001, targetPort 8001
+#       selector: app: user-service
+
+# ---
+
+# ─────────────────────────────────────────────────────────────────────────────
+# MATCH SERVICE (ClusterIP - internal only)
+# ─────────────────────────────────────────────────────────────────────────────
+# TODO: Create ClusterIP service for match-service
+#       Port 8002, targetPort 8002
+#       selector: app: match-service
+
+# ---
+
+# ─────────────────────────────────────────────────────────────────────────────
+# NOTIFICATION SERVICE (ClusterIP - internal only)
+# ─────────────────────────────────────────────────────────────────────────────
+# TODO: Create ClusterIP service for notification-service
+#       Port 8003, targetPort 8003
+
+# ---
+
+# ─────────────────────────────────────────────────────────────────────────────
+# POSTGRESQL SERVICE (ClusterIP - internal only)
+# ─────────────────────────────────────────────────────────────────────────────
+# TODO: Create ClusterIP service for postgres
+#       Port 5432
+
+# ---
+
+# ─────────────────────────────────────────────────────────────────────────────
+# REDIS SERVICE (ClusterIP - internal only)
+# ─────────────────────────────────────────────────────────────────────────────
+# TODO: Create ClusterIP service for redis
+#       Port 6379
+
+# ---
+
+# ─────────────────────────────────────────────────────────────────────────────
+# MONGODB SERVICE (ClusterIP - internal only)
+# ─────────────────────────────────────────────────────────────────────────────
+# TODO: Create ClusterIP service for mongodb
+#       Port 27017
+
+# ─────────────────────────────────────────────────────────────────────────────
+# HEADLESS SERVICE (for StatefulSets like databases)
+# ─────────────────────────────────────────────────────────────────────────────
+# TODO: Create headless service (clusterIP: None) for postgres StatefulSet
+#       This allows direct pod DNS: postgres-0.postgres.fanzone-connect.svc.cluster.local
+
