@@ -17,10 +17,18 @@ import logging
 
 T = TypeVar('T')
 
+
+
 class EntityStatus(Enum):
     """Entity status enumeration following OOP best practices"""
     # TODO: Define states: ACTIVE, INACTIVE, PENDING, DELETED, SUSPENDED
+    ACTIVE = "active"
+    INACTIVE = "inactive"
+    PENDING = "pending"
+    DELETED = "deleted"
+    SUSPENDED = "suspended"
     pass
+
 
 class BaseEntity(ABC):
     """
@@ -30,35 +38,56 @@ class BaseEntity(ABC):
     - Liskov Substitution: All subclasses can replace base
     """
     
+    
     def __init__(self, entity_id: Optional[UUID] = None):
         # TODO: Initialize with UUID, timestamps, status, version
-        pass
+        self._id : UUID = enitity_id or uuid4()
+        self._created_at: datetime = datetime.now(timezone.utc)
+        self._updated_at:datetime = datetime.now(timezone.utc)
+        self._status: EntitiyStatus = EntityStatus.ACTIVE
+        self._version: int = 1
         
     @property
     def id(self) -> UUID:
         # TODO: Return entity's unique identifier
-        pass
+        return self._id
     
     @property
     def created_at(self) -> datetime:
         # TODO: Return creation timestamp
-        pass
+        return self._created_at
+    
+    @property  
+    def updated_at(self) -> datetime:
+        return self._updated_at
+    
+    @property  
+    def status(self) -> EntityStatus:
+        return self._status
+
+    @property
+    def version(self) -> int:
+        return self._version
+
     
     def update_timestamp(self) -> None:
         # TODO: Update timestamp and increment version
-        pass
+        return self._updated_at = datetime.now(timezone.utc)
     
     def activate(self) -> None:
         # TODO: Set status to ACTIVE
-        pass
+        return self._status = EntitiyStatus.ACTIVATE
+        self._update_timestamp()
     
     def deactivate(self) -> None:
         # TODO: Set status to INACTIVE
-        pass
+        return self._status = EntityStatus.INACTIVE
+        self._update_timestamp()
     
     def soft_delete(self) -> None:
         # TODO: Mark as DELETED without removing from DB
-        pass
+        return self._status = EntityStatus.deleted  
+        self._update_timestamp()
     
     @abstractmethod
     def validate(self) -> bool:
@@ -70,48 +99,7 @@ class BaseEntity(ABC):
         # TODO: Implement serialization in subclasses
         pass
 
-class Repository(Generic[T], ABC):
-    """Generic repository pattern for data access - clean architecture"""
-    
-    @abstractmethod
-    async def create(self, entity: T) -> T:
-        # TODO: Database insert operation
-        pass
-    
-    @abstractmethod
-    async def get_by_id(self, entity_id: UUID) -> Optional[T]:
-        # TODO: Database query by ID
-        pass
-    
-    @abstractmethod
-    async def update(self, entity: T) -> T:
-        # TODO: Database update with optimistic locking
-        pass
-    
-    @abstractmethod
-    async def delete(self, entity_id: UUID) -> bool:
-        # TODO: Database delete operation
-        pass
-    
-    @abstractmethod
-    async def list_all(self, limit: int = 100, offset: int = 0) -> List[T]:
-        # TODO: Paginated query for all entities
-        pass
 
-class DomainEvent:
-    """Domain event for event-driven architecture - loose coupling"""
-    
-    def __init__(self, event_type: str, entity_id: UUID, data: Dict[str, Any]):
-        # TODO: Initialize with event_id, type, entity_id, data, timestamp
-        pass
-    
-    def to_dict(self) -> Dict[str, Any]:
-        # TODO: Serialize event to dictionary
-        pass
-    
-    def to_json(self) -> str:
-        # TODO: Serialize event to JSON
-        pass
 
 @dataclass
 class ValueObject:
@@ -119,8 +107,10 @@ class ValueObject:
     
     def __post_init__(self):
         # TODO: Make object immutable after initialization
-        pass
+        object.__setattr__(self, '_frozen', True)
     
     def __setattr__(self, name: str, value: Any) -> None:
         # TODO: Prevent modifications after creation
-        pass
+        if hasattr(self, '_frozen') and self._frozen:
+            raise AttributeError("Value objects are immutable")
+        super().__setattr__(name, value)
